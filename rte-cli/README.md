@@ -10,18 +10,29 @@ Usage:
 
 Available Commands:
 >completion  Generate the autocompletion script for the specified shell
+
 >environ     Manage conda environments
+
 >help        Help about any command
+
 >package     Manage python packages
+
 
 Flags:
 >-c, --container string     container name
+
 >-e, --envName string       conda environment name
+
 >-h, --help                 help for rte-cli
+
 >-n, --newEnvName string    environment name for cloning a new environment
+
 >-p, --packageName string   package name
+
 >-f, --sourceFile string    path of compressed package directory
+
 >-v, --version              version for rte-cli
+
 
 Use **"rte-cli [command] --help"** for more information about a command.
 
