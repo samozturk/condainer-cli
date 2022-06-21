@@ -9,13 +9,13 @@ Usage:
   ```rte-cli [command]```
 
 Available Commands:
->completion  Generate the autocompletion script for the specified shell
+> **completion**  Generate the autocompletion script for the specified shell
 
->environ     Manage conda environments
+> **environ**     Manage conda environments
 
->help        Help about any command
+> **help**        Help about any command
 
->package     Manage python packages
+> **package**    Manage python packages
 
 
 Flags:
