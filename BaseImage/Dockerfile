@@ -24,3 +24,5 @@ RUN chmod +x miniconda.sh
 RUN bash miniconda.sh -b -p $HOME/miniconda3
 RUN eval "$($HOME/miniconda3/bin/conda shell.bash hook)" && conda init
 
+RUN if test -f "requirements.txt" ; then pip install -r requirements.txt ; else echo "No requirements.txt file!" ; fi
+
