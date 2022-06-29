@@ -89,6 +89,8 @@ func ShowMessage(messageType messageType, message string) {
 // 	sOut := fmt.Sprintf("%s", out)
 // 	return sOut, err
 // }
+
+// DONE √
 func CreateEnv(containerName string, envName string) (string, error) {
 
 	command := "docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip'"
@@ -100,6 +102,7 @@ func CreateEnv(containerName string, envName string) (string, error) {
 	return sOut, err
 }
 
+// DONE √
 func AddPackage(containerName string, envName string, packageName string) (string, error) {
 	var command string
 
@@ -112,8 +115,8 @@ func AddPackage(containerName string, envName string, packageName string) (strin
 	return sOut, err
 }
 
+// DONE √
 func RemovePackage(containerName string, envName string, packageName string) (string, error) {
-
 	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip uninstall -y %v'"
 	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
@@ -123,6 +126,7 @@ func RemovePackage(containerName string, envName string, packageName string) (st
 	return sOut, err
 }
 
+// DONE √
 func UpdatePackage(containerName string, envName string, packageName string) (string, error) {
 
 	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v --upgrade'"
@@ -145,20 +149,8 @@ func CloneEnv(containerName string, envName string, newEnvName string) (string, 
 	return sOut, err
 }
 
-func AddPackageFile(containerName string, envName string, filePath string) error {
-	fileExt := strings.TrimPrefix(filepath.Ext(filePath), ".")
-	fmt.Println(fileExt)
-	reader, err := zip.OpenReader(filePath)
-	if err != nil {
-		return err
-	}
-	defer reader.Close()
-
-	return nil
-}
-
 func main() {
-	Untar("arch.tar", "/Users/samet/Documents")
+
 }
 
 func UnzipSource(source, destination string) error {

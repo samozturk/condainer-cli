@@ -53,11 +53,14 @@ func init() {
 }
 
 func addZipAction(containerName string, envName string, source string) error {
+	// Get file extension
 	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
+	// Get home directory
 	homedir, hErr := os.UserHomeDir()
 	if hErr != nil {
 		log.Fatal(hErr)
 	}
+	// Fix python3.7, it doesnt have to be like that always.
 	dest := fmt.Sprintf("%v/tmp/envs/%v/lib/python3.7/site-packages", homedir, envName)
 	if fileExt == "zip" {
 

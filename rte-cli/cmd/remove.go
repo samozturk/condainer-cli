@@ -35,7 +35,7 @@ var removeCmd = &cobra.Command{
 		containerName, _ := cmd.Flags().GetString("container")
 		envName, _ := cmd.Flags().GetString("envName")
 		packageName, _ := cmd.Flags().GetString("packageName")
-		msg := fmt.Sprintf("%q updated in %q environment in %q container", packageName, envName, containerName)
+		msg := fmt.Sprintf("%q removed from %q environment in %q container", packageName, envName, containerName)
 		environ.ShowMessage(environ.INFO, msg)
 	},
 }
