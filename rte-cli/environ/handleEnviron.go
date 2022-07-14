@@ -90,47 +90,10 @@ func ShowMessage(messageType messageType, message string) {
 // 	return sOut, err
 // }
 
-// DONE √
 func CreateEnv(containerName string, envName string) (string, error) {
-
-	command := "docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip'"
-	cmdStr := fmt.Sprintf(command, containerName, envName)
-	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
-	ShowMessage(WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
-}
-
-// DONE √
-func AddPackage(containerName string, envName string, packageName string) (string, error) {
-	var command string
-
-	command = "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v'"
-	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
-	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
-	ShowMessage(WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
-}
-
-// DONE √
-func RemovePackage(containerName string, envName string, packageName string) (string, error) {
-	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip uninstall -y %v'"
-	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
-	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
-	ShowMessage(WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
-}
-
-// DONE √
-func UpdatePackage(containerName string, envName string, packageName string) (string, error) {
-
-	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v --upgrade'"
-	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
+	shortCmd := fmt.Sprintf("/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip", envName)
+	cmdStr := fmt.Sprintf("docker exec %v /bin/bash -c %q", containerName, shortCmd)
+	//cmdStr := fmt.Sprintf("docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip'", containerName, envName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
 	ShowMessage(WARNING, infoMessage)
 	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
@@ -149,10 +112,77 @@ func CloneEnv(containerName string, envName string, newEnvName string) (string, 
 	return sOut, err
 }
 
+func RemoveEnv(containerName string, envName string) (string, error) {
+
+	command := "docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda env remove -n %v'"
+	cmdStr := fmt.Sprintf(command, containerName, envName)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	sOut := fmt.Sprintf("%s", out)
+	return sOut, err
+}
+
+func AddPackage(containerName string, envName string, packageName string) (string, error) {
+	var command string
+
+	command = "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v'"
+	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	sOut := fmt.Sprintf("%s", out)
+	return sOut, err
+}
+
+func RemovePackage(containerName string, envName string, packageName string) (string, error) {
+	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip uninstall -y %v'"
+	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	sOut := fmt.Sprintf("%s", out)
+	return sOut, err
+}
+
+func UpdatePackage(containerName string, envName string, packageName string) (string, error) {
+
+	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v --upgrade'"
+	cmdStr := fmt.Sprintf(command, containerName, envName, packageName)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	sOut := fmt.Sprintf("%s", out)
+	return sOut, err
+}
+
+// DONE
+func AddZipPackage(envName string, source string) error {
+	// Get file extension
+	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
+	// Get home directory
+	homedir, hErr := os.UserHomeDir()
+	if hErr != nil {
+		log.Fatal(hErr)
+	}
+	// Fix python3.7, it doesnt have to be like that always.
+	dest := fmt.Sprintf("%v/tmp/envs/%v/lib/python3.7/site-packages", homedir, envName)
+	if fileExt == "zip" {
+		ShowMessage(WARNING, dest)
+		UnzipSource(source, dest)
+		return nil
+	} else if fileExt == "tar" {
+		ShowMessage(WARNING, dest)
+		Untar(source, dest)
+	}
+	return nil
+}
+
 func main() {
 
 }
 
+// Util functions
 func UnzipSource(source, destination string) error {
 	// 1. Open the zip file
 	reader, err := zip.OpenReader(source)
