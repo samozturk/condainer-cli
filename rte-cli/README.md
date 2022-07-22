@@ -5,6 +5,8 @@ It allows you to **create** a conda environment, **clone** it and **add**/**remo
 
 You can customize environment or package using a command line flag.
 
+_Note: No matter in which container you install the package, all environments are shared between containers using mounting a volume. Environments stored under `$HOME/tmp/envs` via volume binding._
+<br>
 Usage:
   ```rte-cli [command]```
 
