@@ -76,4 +76,4 @@ Clone environment name: numpy
 Environment name: my_env
 Container name: my_cont
 Source file: downloads/numpy.zip
-``` rte-cli package add -c my_cont -e my_env -f downloads/numpy.zip```
+``` rte-cli package addZip -c my_cont -e my_env -f downloads/numpy.zip```
