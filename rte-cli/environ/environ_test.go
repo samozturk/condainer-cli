@@ -139,6 +139,7 @@ func TestAddPackage(t *testing.T) {
 }
 
 func TestAddZipPackageAction(t *testing.T) {
+	containerName := "tazitest"
 	envName := "testenv"
 	source := "sample_package.zip"
 	packageName := FilenameWithoutExtension(source)
@@ -284,3 +285,5 @@ func DeletePackage(packageName string, envName string) {
 		log.Println(cOutStr, '\n', cErr.Error())
 	}
 }
+
+//TODO: define an init function to start a container.
