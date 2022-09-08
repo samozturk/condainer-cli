@@ -33,7 +33,11 @@ Flags:
 
 >-f, --sourceFile string    path of compressed package directory
 
->-v, --version              version for rte-cli
+>- , --version              version for rte-cli
+
+>-r, --requirementsFile     Path of requirements.txt to be installed
+
+>-v , --pythonVersion       Python version of the environment
 
 
 Use **"rte-cli [command] --help"** for more information about a command.

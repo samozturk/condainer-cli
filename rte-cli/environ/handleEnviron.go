@@ -29,6 +29,9 @@ const (
 	// Refer to https://www.shellhacks.com/bash-colors/ for different colors.
 )
 
+const envBindDir string = "tmp/envs"
+const contHomeDir string = "home/tazi"
+
 func ShowMessage(messageType messageType, message string) {
 	switch messageType {
 	case INFO:
@@ -42,53 +45,6 @@ func ShowMessage(messageType messageType, message string) {
 		log.Printf(ErrorColor, printMessage)
 	}
 }
-
-// func main() {
-// 	envName := flag.String("envname", "base", "conda environment name")
-// 	containerName := flag.String("container", "", "docker container name")
-// 	//packageName := flag.String("package", "", "Package name to install")
-// 	//update := flag.Bool("update", false, "True for update, false for install")
-// 	newEnvName := flag.String("newenvname", "", "a name for to be cloned environment")
-// 	flag.Parse()
-// 	// out, err := createEnv(containerName, envName)
-// 	// if err != nil {
-// 	// 	ShowMessage(ERROR, fmt.Sprintf("%v", err))
-// 	// } else {
-// 	// 	ShowMessage(INFO, out)
-// 	// }
-
-// 	// out, err := addPackage(containerName, envName, packageName, update)
-// 	// if err != nil {
-// 	// 	ShowMessage(ERROR, fmt.Sprintf("%v", err))
-// 	// } else {
-// 	// 	ShowMessage(INFO, out)
-// 	// }
-
-// 	// out, err = removePackage(containerName, envName, packageName)
-// 	// if err != nil {
-// 	// 	ShowMessage(ERROR, fmt.Sprintf("%v", err))
-// 	// } else {
-// 	// 	ShowMessage(INFO, out)
-// 	// }
-// 	out, err := cloneEnv(containerName, envName, newEnvName)
-// 	if err != nil {
-// 		ShowMessage(ERROR, fmt.Sprintf("%v", err))
-// 	} else {
-// 		ShowMessage(INFO, out)
-// 	}
-
-// }
-
-// func createEnv(containerName *string, envName *string) (string, error) {
-
-// 	command := "docker exec taptazi /bin/bash -c '/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip'"
-// 	cmdStr := fmt.Sprintf(command, *envName)
-// 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
-// 	ShowMessage(WARNING, infoMessage)
-// 	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-// 	sOut := fmt.Sprintf("%s", out)
-// 	return sOut, err
-// }
 
 func CreateEnv(containerName string, envName string) (string, error) {
 	shortCmd := fmt.Sprintf("/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip", envName)
@@ -178,11 +134,46 @@ func AddZipPackage(envName string, source string) error {
 	return nil
 }
 
+func AddFromText(containerName string, envName string, source string) (string, error) {
+	// Copy requirements.txt to miniconda3/envs/ which is a shared directory
+	err := CopyFile(source, envBindDir)
+	// activate environment name √
+	// execute pip install requirements.txt √
+	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install -r requirements.txt'"
+	cmdStr := fmt.Sprintf(command, containerName, envName)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	sOut := fmt.Sprintf("%s", out)
+	return sOut, err
+
+}
+
 func main() {
 
 }
 
 // Util functions
+func CopyFile(src string, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
+	return out.Close()
+}
+
 func UnzipSource(source, destination string) error {
 	// 1. Open the zip file
 	reader, err := zip.OpenReader(source)

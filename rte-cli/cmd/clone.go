@@ -27,7 +27,7 @@ var cloneCmd = &cobra.Command{
 			return eErr
 		}
 		if nErr != nil {
-			return eErr
+			return nErr
 		}
 		cloneErr := cloneAction(containerName, envName, newEnvName, args)
 		return cloneErr
