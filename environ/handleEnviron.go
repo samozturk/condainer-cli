@@ -137,7 +137,8 @@ func AddZipPackage(envName string, source string) error {
 
 func AddFromText(containerName string, envName string, source string) (string, error) {
 	// Copy requirements.txt to miniconda3/envs/ which is a shared directory
-	CopyFile(source, envBindDir)
+	dst := fmt.Sprintf("%v/requirements.txt", envBindDir)
+	CopyFile(source, dst)
 	// activate environment name and execute pip install requirements.txt √
 	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install -r /home/tazi/miniconda3/envs/requirements.txt'"
 	cmdStr := fmt.Sprintf(command, containerName, envName)
