@@ -150,28 +150,32 @@ func AddFromText(containerName string, envName string, source string) (string, e
 }
 
 func main() {
+	// CopyFile("/Users/samet/Documents/Projects/rte-cli/environ/rte-cli", "/Users/samet/Documents/rte-clu")
 
 }
 
 // Util functions
-func CopyFile(src string, dst string) error {
-	in, err := os.Open(src)
+func CopyFile(src string, dst string) {
+	// Open original file
+	original, err := os.Open(src)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	defer in.Close()
+	defer original.Close()
 
-	out, err := os.Create(dst)
+	// Create new file
+	new, err := os.Create(dst)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	defer out.Close()
+	defer new.Close()
 
-	_, err = io.Copy(out, in)
+	//This will copy
+	bytesWritten, err := io.Copy(new, original)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return out.Close()
+	log.Printf("Bytes Written: %d\n", bytesWritten)
 }
 
 func UnzipSource(source, destination string) error {
