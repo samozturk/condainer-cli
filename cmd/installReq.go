@@ -41,7 +41,7 @@ to quickly create a Cobra application.`,
 		containerName, _ := cmd.Flags().GetString("container")
 		envName, _ := cmd.Flags().GetString("envName")
 		source, _ := cmd.Flags().GetString("requirementsFile")
-		msg := fmt.Sprintf("packages have installed from %v to % venvironment in %v container", source, envName, containerName)
+		msg := fmt.Sprintf("packages have installed from %v to %v environment in %v container", source, envName, containerName)
 		environ.ShowMessage(environ.INFO, msg)
 	},
 }

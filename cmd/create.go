@@ -18,19 +18,25 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
+		pythonVersion, vErr := cmd.Flags().GetString("pythonVersion")
 		if cErr != nil {
 			return cErr
 		}
 		if eErr != nil {
 			return eErr
 		}
-		createErr := createAction(containerName, envName, args)
+		if vErr != nil {
+			return vErr
+		}
+		createErr := createAction(containerName, envName, pythonVersion, args)
 		return createErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		containerName, _ := cmd.Flags().GetString("container")
 		envName, _ := cmd.Flags().GetString("envName")
-		msg := fmt.Sprintf("%q environment created in %q container", envName, containerName)
+		pythonVersion, _ := cmd.Flags().GetString("pythonVersion")
+
+		msg := fmt.Sprintf("%q environment created in %q container with python version %q", envName, containerName, pythonVersion)
 		environ.ShowMessage(environ.INFO, msg)
 	},
 }
@@ -49,8 +55,8 @@ func init() {
 	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func createAction(containerName string, envName string, args []string) error {
-	stOut, err := environ.CreateEnv(containerName, envName)
+func createAction(containerName string, envName string, pythonVersion string, args []string) error {
+	stOut, err := environ.CreateEnv(containerName, envName, pythonVersion)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, err.Error())
 		environ.ShowMessage(environ.ERROR, stOut)

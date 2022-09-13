@@ -29,7 +29,7 @@ const (
 	// Refer to https://www.shellhacks.com/bash-colors/ for different colors.
 )
 
-const envBindDir string = "/home/tazi/tmp/envs"
+const envBindDir string = "$HOME/tmp/envs"
 
 // const contHomeDir string = "/home/tazi"
 
@@ -47,8 +47,8 @@ func ShowMessage(messageType messageType, message string) {
 	}
 }
 
-func CreateEnv(containerName string, envName string) (string, error) {
-	shortCmd := fmt.Sprintf("/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip", envName)
+func CreateEnv(containerName string, envName string, pythonVersion string) (string, error) {
+	shortCmd := fmt.Sprintf("/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=%v pip", envName, pythonVersion)
 	cmdStr := fmt.Sprintf("docker exec %v /bin/bash -c %q", containerName, shortCmd)
 	//cmdStr := fmt.Sprintf("docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip'", containerName, envName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
@@ -162,13 +162,15 @@ func CopyFile(src string, dst string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Opened source")
 	defer original.Close()
 
 	// Create new file
-	new, err := os.Create(dst)
+	new, err := os.Create(os.ExpandEnv(dst))
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Created destination")
 	defer new.Close()
 
 	//This will copy
