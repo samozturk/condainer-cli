@@ -29,7 +29,7 @@ const (
 	// Refer to https://www.shellhacks.com/bash-colors/ for different colors.
 )
 
-const envBindDir string = "$HOME/tmp/envs"
+const envBindDir string = "$HOME/tmp/envs3"
 
 // const contHomeDir string = "/home/tazi"
 
