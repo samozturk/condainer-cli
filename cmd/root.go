@@ -52,7 +52,7 @@ func init() {
 	// will be global for your application.
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.rte-cli.yaml)")
 	rootCmd.PersistentFlags().StringP("container", "c", "", "container name")
-	rootCmd.PersistentFlags().StringP("envName", "e", "", "conda environment name")
+	rootCmd.PersistentFlags().StringP("envName", "e", "base", "conda environment name")
 	rootCmd.PersistentFlags().StringP("packageName", "p", "", "package name")
 	rootCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
 	rootCmd.PersistentFlags().StringP("sourceFile", "f", "", "path of compressed package directory")
