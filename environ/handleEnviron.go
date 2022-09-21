@@ -150,6 +150,23 @@ func AddFromText(containerName string, envName string, source string) (string, e
 
 }
 
+func RunScript(containerName string, envName string, source string) (string, error) {
+	// Get file extension
+	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
+	// Check file format
+	if fileExt != "py" {
+		log.Fatalf("%q is not a python file.", source)
+	}
+	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; python3 %v'"
+	cmdStr := fmt.Sprintf(command, containerName, envName, source)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	sOut := fmt.Sprintf("%s", out)
+	return sOut, err
+
+}
+
 func main() {
 	// CopyFile("/Users/samet/Documents/Projects/rte-cli/environ/rte-cli", "/Users/samet/Documents/rte-clu")
 

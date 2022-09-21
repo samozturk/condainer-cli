@@ -15,13 +15,14 @@ import (
 )
 
 var (
-	ErrEnvNotFound = errors.New("Specified env is not present in the container")
+	ErrEnvNotFound = errors.New("specified env is not present in the container")
 )
 
 //** ENVIRONMENT TESTS **//
 func TestCreateEnv(t *testing.T) {
 	containerName := "tazitest"
 	envName := "testenv"
+	pythonVersion := "3.8.3"
 
 	/* Prepare */
 	deleteContainer(containerName)
@@ -29,7 +30,7 @@ func TestCreateEnv(t *testing.T) {
 
 	/* Apply function */
 	// Create environment
-	_, crErr := environ.CreateEnv(containerName, envName)
+	_, crErr := environ.CreateEnv(containerName, envName, pythonVersion)
 	// Error Handling //
 	if crErr != nil {
 		environ.ShowMessage(environ.ERROR, "Create environment failed.")
