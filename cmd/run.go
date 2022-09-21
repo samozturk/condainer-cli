@@ -7,21 +7,38 @@ package cmd
 import (
 	"fmt"
 
+	"git.tazi.ai/samet/rte-cli/environ"
 	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Run a python script",
+	Long:  `Run a python script in a container`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		containerName, cErr := cmd.Flags().GetString("container")
+		envName, eErr := cmd.Flags().GetString("envName")
+		source, sErr := cmd.Flags().GetString("source")
+		if cErr != nil {
+			return cErr
+		}
+		if eErr != nil {
+			return eErr
+		}
+		if sErr != nil {
+			return sErr
+		}
+		runErr := runAction(containerName, envName, source)
+		return runErr
+	},
+	PostRun: func(cmd *cobra.Command, args []string) {
+		containerName, _ := cmd.Flags().GetString("container")
+		envName, _ := cmd.Flags().GetString("envName")
+		source, _ := cmd.Flags().GetString("source")
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("run called")
+		msg := fmt.Sprintf("%q run in %q container with %q environment", source, containerName, envName)
+		environ.ShowMessage(environ.INFO, msg)
 	},
 }
 
@@ -37,4 +54,16 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func runAction(containerName string, envName string, source string) error {
+	stOut, err := environ.RunScript(containerName, envName, source)
+	if err != nil {
+		environ.ShowMessage(environ.ERROR, err.Error())
+		environ.ShowMessage(environ.ERROR, stOut)
+
+		return err
+	} else {
+		return nil
+	}
 }
