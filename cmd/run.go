@@ -19,7 +19,7 @@ var runCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
-		source, sErr := cmd.Flags().GetString("source")
+		source, sErr := cmd.Flags().GetString("sourceFile")
 		if cErr != nil {
 			return cErr
 		}
