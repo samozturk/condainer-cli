@@ -35,7 +35,7 @@ var runCmd = &cobra.Command{
 	PostRun: func(cmd *cobra.Command, args []string) {
 		containerName, _ := cmd.Flags().GetString("container")
 		envName, _ := cmd.Flags().GetString("envName")
-		source, _ := cmd.Flags().GetString("source")
+		source, _ := cmd.Flags().GetString("sourceFile")
 
 		msg := fmt.Sprintf("%q run in %q container with %q environment", source, containerName, envName)
 		environ.ShowMessage(environ.INFO, msg)
