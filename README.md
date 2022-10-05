@@ -81,3 +81,16 @@ Environment name: my_env
 Container name: my_cont
 Source file: downloads/numpy.zip
 ``` rte-cli package addZip -c my_cont -e my_env -f downloads/numpy.zip```
+
+ - **To install multiple packages from a requirements.txt file**
+Environment name: my_env
+Container name: my_cont
+Source file: downloads/requirements.txt
+``` rte-cli package installReq -c my_cont -e my_env -r downloads/requirements.txt```
+
+#### Run Related ####
+ - **To run a python script**
+Environment name: my_env
+Container name: my_cont
+Script name: script.py
+``` rte-cli run -c my_cont -e my_env -p script.py```
