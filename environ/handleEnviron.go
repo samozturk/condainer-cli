@@ -140,8 +140,8 @@ func AddFromText(containerName string, envName string, source string) (string, e
 	dst := fmt.Sprintf("%v/requirements.txt", envBindDir)
 	CopyFile(source, dst)
 	// activate environment name and execute pip install requirements.txt √
-	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install -r /home/tazi/miniconda3/envs/requirements.txt'"
-	cmdStr := fmt.Sprintf(command, containerName, envName)
+	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install -r /home/tazi/miniconda3/envs/%v/requirements.txt'"
+	cmdStr := fmt.Sprintf(command, containerName, envName, envName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
 	ShowMessage(WARNING, infoMessage)
 	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
