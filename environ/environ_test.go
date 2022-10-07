@@ -18,6 +18,13 @@ var (
 	ErrEnvNotFound = errors.New("specified env is not present in the container")
 )
 
+var (
+	containerName = "tazitest"
+	envName       = "testenv"
+	cloneEnvName  = "clonetest"
+	homePath      = "/home/tazi"
+)
+
 //** ENVIRONMENT TESTS **//
 func TestCreateEnv(t *testing.T) {
 	containerName := "tazitest"
@@ -30,7 +37,7 @@ func TestCreateEnv(t *testing.T) {
 
 	/* Apply function */
 	// Create environment
-	_, crErr := environ.CreateEnv(containerName, envName, pythonVersion)
+	_, crErr := environ.CreateEnv(containerName, envName, pythonVersion, homePath)
 	// Error Handling //
 	if crErr != nil {
 		environ.ShowMessage(environ.ERROR, "Create environment failed.")
@@ -51,9 +58,6 @@ func TestCreateEnv(t *testing.T) {
 
 func TestCloneEnv(t *testing.T) {
 	// Variables
-	containerName := "tazitest"
-	envName := "testenv"
-	cloneEnvName := "clonetest"
 
 	/* Prepare */
 	deleteContainer(containerName)
@@ -64,7 +68,7 @@ func TestCloneEnv(t *testing.T) {
 
 	/* Apply function */
 	// Clone environment
-	cOut, cErr := environ.CloneEnv(containerName, envName, cloneEnvName)
+	cOut, cErr := environ.CloneEnv(containerName, envName, cloneEnvName, homePath)
 	log.Println(cOut, '\n', cErr)
 
 	/* Testing */
@@ -122,7 +126,7 @@ func TestAddPackage(t *testing.T) {
 	createEnv(containerName, envName)
 
 	/* Apply function */
-	aOut, aErr := environ.AddPackage(containerName, envName, packageName)
+	aOut, aErr := environ.AddPackage(containerName, envName, packageName, homePath)
 	if aErr != nil {
 		log.Println(aOut)
 	}

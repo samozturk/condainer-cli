@@ -20,6 +20,10 @@ var runCmd = &cobra.Command{
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		source, sErr := cmd.Flags().GetString("sourceFile")
+		homePath, hErr := cmd.Flags().GetString("homePath")
+		if hErr != nil {
+			return hErr
+		}
 		if cErr != nil {
 			return cErr
 		}
@@ -29,7 +33,7 @@ var runCmd = &cobra.Command{
 		if sErr != nil {
 			return sErr
 		}
-		runErr := runAction(containerName, envName, source)
+		runErr := runAction(containerName, envName, source, homePath)
 		return runErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
@@ -56,8 +60,8 @@ func init() {
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runAction(containerName string, envName string, source string) error {
-	stOut, err := environ.RunScript(containerName, envName, source)
+func runAction(containerName string, envName string, source string, homePath string) error {
+	stOut, err := environ.RunScript(containerName, envName, source, homePath)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, err.Error())
 		environ.ShowMessage(environ.ERROR, stOut)

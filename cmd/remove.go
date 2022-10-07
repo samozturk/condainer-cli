@@ -19,6 +19,10 @@ var removeCmd = &cobra.Command{
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		packageName, pErr := cmd.Flags().GetString("packageName")
+		homePath, hErr := cmd.Flags().GetString("homePath")
+		if hErr != nil {
+			return hErr
+		}
 		if cErr != nil {
 			return cErr
 		}
@@ -28,7 +32,7 @@ var removeCmd = &cobra.Command{
 		if pErr != nil {
 			return pErr
 		}
-		err := removeAction(containerName, envName, packageName)
+		err := removeAction(containerName, envName, packageName, homePath)
 		return err
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
@@ -53,8 +57,8 @@ func init() {
 	// is called directly, e.g.:
 	// removeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-func removeAction(containerName string, envName string, packageName string) error {
-	sOut, err := environ.RemovePackage(containerName, envName, packageName)
+func removeAction(containerName string, envName string, packageName string, homePath string) error {
+	sOut, err := environ.RemovePackage(containerName, envName, packageName, homePath)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, err.Error())
 		environ.ShowMessage(environ.ERROR, sOut)

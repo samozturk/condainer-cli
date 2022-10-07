@@ -25,6 +25,10 @@ to quickly create a Cobra application.`,
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		source, sErr := cmd.Flags().GetString("requirementsFile")
+		homePath, hErr := cmd.Flags().GetString("homePath")
+		if hErr != nil {
+			return hErr
+		}
 		if cErr != nil {
 			return cErr
 		}
@@ -34,7 +38,7 @@ to quickly create a Cobra application.`,
 		if sErr != nil {
 			return sErr
 		}
-		cloneErr := AddFromTextAction(containerName, envName, source)
+		cloneErr := AddFromTextAction(containerName, envName, source, homePath)
 		return cloneErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
@@ -60,8 +64,8 @@ func init() {
 	// installReqCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func AddFromTextAction(containerName string, envName string, source string) error {
-	stdOut, err := environ.AddFromText(containerName, envName, source)
+func AddFromTextAction(containerName string, envName string, source string, homePath string) error {
+	stdOut, err := environ.AddFromText(containerName, envName, source, homePath)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, stdOut)
 		return err

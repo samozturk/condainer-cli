@@ -19,6 +19,10 @@ var addCmd = &cobra.Command{
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		packageName, pErr := cmd.Flags().GetString("packageName")
+		homePath, hErr := cmd.Flags().GetString("homePath")
+		if hErr != nil {
+			return hErr
+		}
 		if cErr != nil {
 			return cErr
 		}
@@ -28,7 +32,7 @@ var addCmd = &cobra.Command{
 		if pErr != nil {
 			return pErr
 		}
-		err := addAction(containerName, envName, packageName)
+		err := addAction(containerName, envName, packageName, homePath)
 		return err
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
@@ -54,8 +58,8 @@ func init() {
 	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func addAction(containerName string, envName string, packageName string) error {
-	sOut, err := environ.AddPackage(containerName, envName, packageName)
+func addAction(containerName string, envName string, packageName string, homePath string) error {
+	sOut, err := environ.AddPackage(containerName, envName, packageName, homePath)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, err.Error())
 		environ.ShowMessage(environ.ERROR, sOut)

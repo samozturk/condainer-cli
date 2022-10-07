@@ -20,6 +20,10 @@ var cloneCmd = &cobra.Command{
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		newEnvName, nErr := cmd.Flags().GetString("newEnvName")
+		homePath, hErr := cmd.Flags().GetString("homePath")
+		if hErr != nil {
+			return hErr
+		}
 		if cErr != nil {
 			return cErr
 		}
@@ -29,7 +33,7 @@ var cloneCmd = &cobra.Command{
 		if nErr != nil {
 			return nErr
 		}
-		cloneErr := cloneAction(containerName, envName, newEnvName, args)
+		cloneErr := cloneAction(containerName, envName, newEnvName, homePath)
 		return cloneErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
@@ -55,8 +59,8 @@ func init() {
 	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func cloneAction(containerName string, envName string, newEnvName string, args []string) error {
-	stdOut, err := environ.CloneEnv(containerName, envName, newEnvName)
+func cloneAction(containerName string, envName string, newEnvName string, homePath string) error {
+	stdOut, err := environ.CloneEnv(containerName, envName, newEnvName, homePath)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, stdOut)
 		return err

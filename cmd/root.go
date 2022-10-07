@@ -52,12 +52,13 @@ func init() {
 	// will be global for your application.
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.rte-cli.yaml)")
 	rootCmd.PersistentFlags().StringP("container", "c", "", "container name")
-	rootCmd.PersistentFlags().StringP("envName", "e", "base", "conda environment name")
+	rootCmd.PersistentFlags().StringP("envName", "e", "base", "conda environment name, default: base")
 	rootCmd.PersistentFlags().StringP("packageName", "p", "", "package name")
 	rootCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
 	rootCmd.PersistentFlags().StringP("sourceFile", "f", "", "path of compressed package directory")
 	rootCmd.PersistentFlags().StringP("requirementsFile", "r", "", "path of requirements txt")
 	rootCmd.PersistentFlags().StringP("pythonVersion", "v", "", "Python version")
+	rootCmd.PersistentFlags().StringP("homePath", "h", "/home/tazi", "home path for container, default: /home/tazi")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
