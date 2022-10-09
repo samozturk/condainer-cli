@@ -23,13 +23,13 @@ var (
 	envName       = "testenv"
 	cloneEnvName  = "clonetest"
 	homePath      = "/home/tazi"
+	pythonVersion = "3.8.3"
 )
 
 //** ENVIRONMENT TESTS **//
 func TestCreateEnv(t *testing.T) {
 	containerName := "tazitest"
 	envName := "testenv"
-	pythonVersion := "3.8.3"
 
 	/* Prepare */
 	deleteContainer(containerName)
@@ -48,7 +48,7 @@ func TestCreateEnv(t *testing.T) {
 	envs := GetExistingEnvNames(containerName)
 	log.Println(envs)
 	if !(StringInSlice(envName, envs)) {
-		log.Fatalln(ErrEnvNotFound)
+		t.Error(ErrEnvNotFound)
 	}
 
 	/* Sanitation */
@@ -96,7 +96,7 @@ func TestRemoveEnv(t *testing.T) {
 	createEnv(containerName, envName)
 
 	/* Apply function */
-	_, crErr := environ.RemoveEnv(containerName, envName)
+	_, crErr := environ.RemoveEnv(containerName, envName, homePath)
 	// Error Handling //
 	if crErr != nil {
 		environ.ShowMessage(environ.ERROR, "Remove environment failed.")
@@ -167,6 +167,24 @@ func TestAddZipPackageAction(t *testing.T) {
 	/* Sanitation */
 	cleanEnv(containerName, envName)
 	deleteContainer(containerName)
+}
+
+// TEST UTILITY FUNCTIONS
+func TestGetPyVersion(t *testing.T) {
+	exp_maj := 3
+	exp_min := 8
+	exp_patch := 3
+	maj, min, patch := environ.GetPyVersion(pythonVersion)
+	if maj != exp_maj {
+		t.Errorf("Expected %d %T got %d %T", exp_maj, exp_maj, maj, maj)
+	}
+	if min != exp_min {
+		t.Errorf("Expected %d %T got %d %T", exp_min, exp_min, min, min)
+	}
+	if patch != exp_patch {
+		t.Errorf("Expected %d %T got %d %T", exp_patch, exp_patch, patch, patch)
+	}
+
 }
 
 // UTILITY FUNCTIONS //

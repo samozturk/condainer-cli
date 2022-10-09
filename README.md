@@ -47,8 +47,9 @@ Use **"rte-cli [command] --help"** for more information about a command.
  - **To create an environment in a container:**
 Environment name: my_env
 Container name: my_cont
+Python version: 3.8.5
 
-```rte-cli environ create -c my_cont -e my_env ```
+```rte-cli environ create -c my_cont -e my_env -v 3.8.5 ```
 
  - **To clone an environment in a container:**
 Environment name: my_env

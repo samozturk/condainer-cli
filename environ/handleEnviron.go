@@ -10,6 +10,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -168,11 +170,19 @@ func RunScript(containerName string, envName string, source string, homePath str
 }
 
 func main() {
-	// CopyFile("/Users/samet/Documents/Projects/rte-cli/environ/rte-cli", "/Users/samet/Documents/rte-clu")
 
 }
 
 // Util functions
+// Parse python versions to use in directories
+func GetPyVersion(version string) (int, int, int) {
+	m, _ := regexp.Compile("[0-9]+")
+	matches := (m.FindAllStringSubmatch(version, -1))
+	major, _ := strconv.Atoi(matches[0][0])
+	minor, _ := strconv.Atoi(matches[1][0])
+	patch, _ := strconv.Atoi(matches[2][0])
+	return major, minor, patch
+}
 func CopyFile(src string, dst string) {
 	// Open original file
 	original, err := os.Open(src)
@@ -337,3 +347,9 @@ func Untar(sourcefile, dest string) {
 		}
 	}
 }
+
+// TODO: use pip install for *.whl files
+// TODO: Fix AddZipPackage. parameterize it
+// TODO: write tests
+// TODO: write CI pipeline
+// TODO: more verbose errors

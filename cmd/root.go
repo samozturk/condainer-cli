@@ -57,7 +57,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
 	rootCmd.PersistentFlags().StringP("sourceFile", "f", "", "path of compressed package directory")
 	rootCmd.PersistentFlags().StringP("requirementsFile", "r", "", "path of requirements txt")
-	rootCmd.PersistentFlags().StringP("pythonVersion", "v", "", "Python version")
+	rootCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
 	rootCmd.PersistentFlags().StringP("homePath", "h", "/home/tazi", "home path for container, default: /home/tazi")
 
 	// Cobra also supports local flags, which will only run
