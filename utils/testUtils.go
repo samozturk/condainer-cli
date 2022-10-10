@@ -38,19 +38,19 @@ func StopContainer(containerName string) {
 	}
 }
 
-//refactored
-// func CreateEnv(containerName string, envName string) {
-// 	cCommand := "docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda create -y -p /home/tazi/miniconda3/envs/%v python=3.7.10 pip'"
-// 	cmdStr := fmt.Sprintf(cCommand, containerName, envName)
-// 	infoMessage := fmt.Sprintf("Creating environment: %v", cmdStr)
-// 	ShowMessage(WARNING, infoMessage)
-// 	_, _, err := RunCommand(cmdStr)
-// 	if err != nil {
-// 		ShowMessage(ERROR, "Environment create failed.")
-// 	} else {
-// 		ShowMessage(INFO, fmt.Sprintf("%v Environment Created", envName))
-// 	}
-// }
+func CreateTestEnv(containerName string, envName string, pythonVersion string, homePath string) (string, error) {
+	maj, min, _ := GetPyVersion(pythonVersion)
+	shortCmd := fmt.Sprintf("%v/miniconda3/bin/conda create -y -p %v/miniconda3/envs/%v python=%d.%d pip", homePath, homePath, envName, maj, min)
+	cmdStr := fmt.Sprintf("docker exec %v /bin/bash -c %q", containerName, shortCmd)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, stderr, err := RunCommand(cmdStr)
+	if err == nil {
+		fmt.Println(out, stderr)
+		ShowMessage(INFO, "Environment Created.")
+	}
+	return out, err
+}
 
 //refactored
 func CleanEnv(containerName string, envName string) {

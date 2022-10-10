@@ -3,6 +3,8 @@ package environ
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"git.tazi.ai/samet/rte-cli/utils"
 )
@@ -55,9 +57,22 @@ func RemoveEnv(containerName string, envName string, homePath string) (string, e
 	}
 	return out, err
 }
-
-func main() {
-
+func addZipEnv(containerName string, source string, hostBindPath string) error {
+	utils.ShowMessage(utils.INFO, source)
+	// Get file extension
+	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
+	dest := hostBindPath
+	utils.ShowMessage(utils.WARNING, fmt.Sprintf("Copying to %q", dest))
+	if fileExt == "zip" {
+		err := utils.UnzipSource(source, dest)
+		if err != nil {
+			utils.ShowMessage(utils.ERROR, fmt.Sprintf("Can't unzip, %q", err.Error()))
+		}
+		return err
+	} else if fileExt == "tar" {
+		utils.Untar(source, dest)
+	}
+	return nil
 }
 
 // TODO: use pip install for *.whl files

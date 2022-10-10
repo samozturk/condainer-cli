@@ -20,14 +20,17 @@ var (
 	pythonVersion = "3.8.3"
 )
 
-//** ENVIRONMENT TESTS **//
-func TestCreateEnv(t *testing.T) {
-	containerName := "tazitest"
-	envName := "testenv"
-
-	/* Prepare */
+func init() {
+	utils.RunCommand("rm -rf $HOME/tmp/envs/*")
 	utils.StopContainer(containerName)
 	utils.RunContainer(containerName)
+	utils.CleanEnv(containerName, envName)
+	utils.ShowMessage(utils.INFO, "--Init function executed.--")
+
+}
+
+//** ENVIRONMENT TESTS **//
+func TestCreateEnv(t *testing.T) {
 
 	/* Apply function */
 	// Create environment
@@ -42,23 +45,17 @@ func TestCreateEnv(t *testing.T) {
 	envs := utils.GetExistingEnvNames(containerName)
 	log.Println(envs)
 	if !(utils.StringInSlice(envName, envs)) {
-		t.Error(ErrEnvNotFound)
+		t.Errorf("%v is not in %v. Existing envs: %v", envName, containerName, envs)
 	}
 
 	/* Sanitation */
 	utils.CleanEnv(containerName, envName)
-	utils.StopContainer(containerName)
 }
 
 func TestCloneEnv(t *testing.T) {
-	// Variables
-
-	/* Prepare */
-	utils.StopContainer(containerName)
-	utils.RunContainer(containerName)
 
 	// Create an environment to clone later
-	utils.CreateEnv(containerName, envName)
+	utils.CreateTestEnv(containerName, envName, pythonVersion, homePath)
 
 	/* Apply function */
 	// Clone environment
@@ -69,25 +66,18 @@ func TestCloneEnv(t *testing.T) {
 	// Get existing environment names and check <envName> is in them
 	envs := utils.GetExistingEnvNames(containerName)
 	if !(utils.StringInSlice(cloneEnvName, envs)) {
-		log.Fatalln(ErrEnvNotFound)
+		t.Errorf("%v is not in %v. Existing envs: %v", cloneEnvName, containerName, envs)
 	}
 
 	/* Sanitation */
 	utils.CleanEnv(containerName, envName)
 	utils.CleanEnv(containerName, cloneEnvName)
-	utils.StopContainer(containerName)
-
 }
 
 func TestRemoveEnv(t *testing.T) {
-	containerName := "tazitest"
-	envName := "testenv"
 
-	/* Prepare */
-	utils.StopContainer(containerName)
-	utils.RunContainer(containerName)
 	// Create an environment to remove later
-	utils.CreateEnv(containerName, envName)
+	utils.CreateTestEnv(containerName, envName, pythonVersion, homePath)
 
 	/* Apply function */
 	_, crErr := RemoveEnv(containerName, envName, homePath)
@@ -100,28 +90,8 @@ func TestRemoveEnv(t *testing.T) {
 	// Get existing environment names and check <envName> is in them
 	envs := utils.GetExistingEnvNames(containerName)
 	if utils.StringInSlice(envName, envs) {
-		log.Fatalln(ErrEnvNotFound)
+		t.Errorf("%v couldn't be removed in %v. Existing envs: %v", envName, containerName, envs)
 	}
-
 	/* Sanitation */
-	utils.CleanEnv(containerName, envName)
-	utils.StopContainer(containerName)
-}
-
-// TEST UTILITY FUNCTIONS
-func TestGetPyVersion(t *testing.T) {
-	exp_maj := 3
-	exp_min := 8
-	exp_patch := 3
-	maj, min, patch := utils.GetPyVersion(pythonVersion)
-	if maj != exp_maj {
-		t.Errorf("Expected %d %T got %d %T", exp_maj, exp_maj, maj, maj)
-	}
-	if min != exp_min {
-		t.Errorf("Expected %d %T got %d %T", exp_min, exp_min, min, min)
-	}
-	if patch != exp_patch {
-		t.Errorf("Expected %d %T got %d %T", exp_patch, exp_patch, patch, patch)
-	}
-
+	// utils.CleanEnv(containerName, envName)
 }
