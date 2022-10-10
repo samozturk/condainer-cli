@@ -1,3 +1,5 @@
 .DS_Store
 rte-cli/sample_package.zip
 rte-cli/.DS_Storegit ad
+goldenFIles/*
+*/.DS_Store

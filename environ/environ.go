@@ -57,20 +57,23 @@ func RemoveEnv(containerName string, envName string, homePath string) (string, e
 	}
 	return out, err
 }
-func addZipEnv(containerName string, source string, hostBindPath string) error {
-	utils.ShowMessage(utils.INFO, source)
+func AddZipEnv(containerName string, source string, hostBindPath string) error {
 	// Get file extension
 	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
 	dest := hostBindPath
-	utils.ShowMessage(utils.WARNING, fmt.Sprintf("Copying to %q", dest))
+
 	if fileExt == "zip" {
+		utils.ShowMessage(utils.WARNING, fmt.Sprintf("Copying to %q", dest))
 		err := utils.UnzipSource(source, dest)
 		if err != nil {
-			utils.ShowMessage(utils.ERROR, fmt.Sprintf("Can't unzip, %q", err.Error()))
+			utils.ShowMessage(utils.ERROR, fmt.Sprintf("%q", err.Error()))
 		}
 		return err
 	} else if fileExt == "tar" {
+		utils.ShowMessage(utils.WARNING, fmt.Sprintf("Copying to %q", dest))
 		utils.Untar(source, dest)
+	} else {
+		utils.ShowMessage(utils.ERROR, fmt.Sprintf("%v extension is not supported.", fileExt))
 	}
 	return nil
 }
