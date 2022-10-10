@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"git.tazi.ai/samet/rte-cli/environ"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +42,7 @@ var cloneCmd = &cobra.Command{
 		envName, _ := cmd.Flags().GetString("envName")
 		newEnvName, _ := cmd.Flags().GetString("newEnvName")
 		msg := fmt.Sprintf("%v environment cloned as %v in %v container", envName, newEnvName, containerName)
-		environ.ShowMessage(environ.INFO, msg)
+		utils.ShowMessage(utils.INFO, msg)
 	},
 }
 
@@ -62,7 +63,7 @@ func init() {
 func cloneAction(containerName string, envName string, newEnvName string, homePath string) error {
 	stdOut, err := environ.CloneEnv(containerName, envName, newEnvName, homePath)
 	if err != nil {
-		environ.ShowMessage(environ.ERROR, stdOut)
+		utils.ShowMessage(utils.ERROR, stdOut)
 		return err
 	} else {
 		return nil

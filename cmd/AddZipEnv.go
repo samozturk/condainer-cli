@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"git.tazi.ai/samet/rte-cli/environ"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -55,7 +55,7 @@ func init() {
 }
 
 func addZipEnvAction(containerName string, source string) error {
-	environ.ShowMessage(environ.INFO, source)
+	utils.ShowMessage(utils.INFO, source)
 	// Get file extension
 	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
 	// Get home directory
@@ -67,11 +67,11 @@ func addZipEnvAction(containerName string, source string) error {
 	dest := fmt.Sprintf("%v/tmp/envs/", homedir)
 	if fileExt == "zip" {
 
-		environ.ShowMessage(environ.WARNING, dest)
-		environ.UnzipSource(source, dest)
+		utils.ShowMessage(utils.WARNING, dest)
+		utils.UnzipSource(source, dest)
 		return nil
 	} else if fileExt == "tar" {
-		environ.Untar(source, dest)
+		utils.Untar(source, dest)
 	}
 	return nil
 }

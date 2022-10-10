@@ -18,16 +18,18 @@ var addZipCmd = &cobra.Command{
 		//containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		source, pErr := cmd.Flags().GetString("sourceFile")
-		// if cErr != nil {
-		// 	return cErr
-		// }
+		pythonVersion, vErr := cmd.Flags().GetString("pythonVersion")
+
+		if vErr != nil {
+			return vErr
+		}
 		if eErr != nil {
 			return eErr
 		}
 		if pErr != nil {
 			return pErr
 		}
-		err := AddZipAction(envName, source)
+		err := AddZipAction(envName, source, pythonVersion)
 		return err
 	},
 }
@@ -46,8 +48,8 @@ func init() {
 	// addZipCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func AddZipAction(envName string, source string) error {
-	err := environ.AddZipPackage(envName, source)
+func AddZipAction(envName string, source string, pythonVersion string) error {
+	err := environ.AddZipPackage(envName, source, pythonVersion)
 	if err != nil {
 		environ.ShowMessage(environ.ERROR, err.Error())
 	}

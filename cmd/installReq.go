@@ -7,7 +7,8 @@ package cmd
 import (
 	"fmt"
 
-	"git.tazi.ai/samet/rte-cli/environ"
+	"git.tazi.ai/samet/rte-cli/pkg"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +47,7 @@ to quickly create a Cobra application.`,
 		envName, _ := cmd.Flags().GetString("envName")
 		source, _ := cmd.Flags().GetString("requirementsFile")
 		msg := fmt.Sprintf("packages have installed from %v to %v environment in %v container", source, envName, containerName)
-		environ.ShowMessage(environ.INFO, msg)
+		utils.ShowMessage(utils.INFO, msg)
 	},
 }
 
@@ -65,9 +66,9 @@ func init() {
 }
 
 func AddFromTextAction(containerName string, envName string, source string, homePath string) error {
-	stdOut, err := environ.AddFromText(containerName, envName, source, homePath)
+	stdOut, err := pkg.AddFromText(containerName, envName, source, homePath, hostBindPath)
 	if err != nil {
-		environ.ShowMessage(environ.ERROR, stdOut)
+		utils.ShowMessage(utils.ERROR, stdOut)
 		return err
 	} else {
 		return nil

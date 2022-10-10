@@ -59,6 +59,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("requirementsFile", "r", "", "path of requirements txt")
 	rootCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
 	rootCmd.PersistentFlags().StringP("homePath", "h", "/home/tazi", "home path for container, default: /home/tazi")
+	rootCmd.PersistentFlags().StringP("hostBindPath", "b", "/tmp/envs", "where you bind the host to container, default: /tmp/envs")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

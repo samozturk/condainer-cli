@@ -7,7 +7,8 @@ package cmd
 import (
 	"fmt"
 
-	"git.tazi.ai/samet/rte-cli/environ"
+	"git.tazi.ai/samet/rte-cli/runScript"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +43,7 @@ var runCmd = &cobra.Command{
 		source, _ := cmd.Flags().GetString("sourceFile")
 
 		msg := fmt.Sprintf("%q run in %q container with %q environment", source, containerName, envName)
-		environ.ShowMessage(environ.INFO, msg)
+		utils.ShowMessage(utils.INFO, msg)
 	},
 }
 
@@ -61,10 +62,10 @@ func init() {
 }
 
 func runAction(containerName string, envName string, source string, homePath string) error {
-	stOut, err := environ.RunScript(containerName, envName, source, homePath)
+	stOut, err := runScript.RunPy(containerName, envName, source, homePath)
 	if err != nil {
-		environ.ShowMessage(environ.ERROR, err.Error())
-		environ.ShowMessage(environ.ERROR, stOut)
+		utils.ShowMessage(utils.ERROR, err.Error())
+		utils.ShowMessage(utils.ERROR, stOut)
 
 		return err
 	} else {

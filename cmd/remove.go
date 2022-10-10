@@ -7,7 +7,8 @@ package cmd
 import (
 	"fmt"
 
-	"git.tazi.ai/samet/rte-cli/environ"
+	"git.tazi.ai/samet/rte-cli/pkg"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +41,7 @@ var removeCmd = &cobra.Command{
 		envName, _ := cmd.Flags().GetString("envName")
 		packageName, _ := cmd.Flags().GetString("packageName")
 		msg := fmt.Sprintf("%q removed from %q environment in %q container", packageName, envName, containerName)
-		environ.ShowMessage(environ.INFO, msg)
+		utils.ShowMessage(utils.INFO, msg)
 	},
 }
 
@@ -58,10 +59,10 @@ func init() {
 	// removeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 func removeAction(containerName string, envName string, packageName string, homePath string) error {
-	sOut, err := environ.RemovePackage(containerName, envName, packageName, homePath)
+	sOut, err := pkg.RemovePackage(containerName, envName, packageName, homePath)
 	if err != nil {
-		environ.ShowMessage(environ.ERROR, err.Error())
-		environ.ShowMessage(environ.ERROR, sOut)
+		utils.ShowMessage(utils.ERROR, err.Error())
+		utils.ShowMessage(utils.ERROR, sOut)
 	}
 	return err
 }

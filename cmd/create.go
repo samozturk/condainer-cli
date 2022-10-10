@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"git.tazi.ai/samet/rte-cli/environ"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +42,7 @@ var createCmd = &cobra.Command{
 		pythonVersion, _ := cmd.Flags().GetString("pythonVersion")
 
 		msg := fmt.Sprintf("%q environment created in %q container with python version %q", envName, containerName, pythonVersion)
-		environ.ShowMessage(environ.INFO, msg)
+		utils.ShowMessage(utils.INFO, msg)
 	},
 }
 
@@ -62,8 +63,8 @@ func init() {
 func createAction(containerName string, envName string, pythonVersion string, homePath string) error {
 	stOut, err := environ.CreateEnv(containerName, envName, pythonVersion, homePath)
 	if err != nil {
-		environ.ShowMessage(environ.ERROR, err.Error())
-		environ.ShowMessage(environ.ERROR, stOut)
+		utils.ShowMessage(utils.ERROR, err.Error())
+		utils.ShowMessage(utils.ERROR, stOut)
 
 		return err
 	} else {

@@ -8,4 +8,5 @@ import "git.tazi.ai/samet/rte-cli/cmd"
 
 func main() {
 	cmd.Execute()
+
 }
