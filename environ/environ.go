@@ -57,6 +57,8 @@ func RemoveEnv(containerName string, envName string, homePath string) (string, e
 	}
 	return out, err
 }
+
+// Add an environment from a comporessed file
 func AddZipEnv(containerName string, source string, hostBindPath string) error {
 	// Get file extension
 	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")

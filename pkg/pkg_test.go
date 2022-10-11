@@ -19,7 +19,7 @@ func TestAddPackage(t *testing.T) {
 	createEnv(containerName, envName)
 
 	/* Apply function */
-	aOut, aErr := pkg.AddPackage(containerName, envName, packageName, homePath)
+	aOut, aErr := AddPackage(containerName, envName, packageName, homePath)
 	if aErr != nil {
 		log.Println(aOut)
 	}
@@ -36,28 +36,28 @@ func TestAddPackage(t *testing.T) {
 	deleteContainer(containerName)
 }
 
-func TestAddZipPackageAction(t *testing.T) {
-	containerName := "tazitest"
-	envName := "testenv"
-	source := "sample_package.zip"
-	packageName := FilenameWithoutExtension(source)
-	utils.ShowMessage(utils.INFO, packageName)
+// func TestAddZipPackageAction(t *testing.T) {
+// 	containerName := "tazitest"
+// 	envName := "testenv"
+// 	source := "sample_package.zip"
+// 	packageName := FilenameWithoutExtension(source)
+// 	utils.ShowMessage(utils.INFO, packageName)
 
-	/* Prepare */
+// 	/* Prepare */
 
-	/* Apply function */
-	aErr := pkg.AddZipPackage(envName, source, pythonVersion)
-	if aErr != nil {
-		log.Println(aErr.Error())
-	}
-	/* Testing */
-	// Get existing environment names and check <envName> is in them
-	packages := GetExistingPackageNames(containerName, envName)
-	if !(StringInSlice(packageName, packages)) {
-		log.Fatalln(ErrEnvNotFound)
-	}
-	// defer this
-	/* Sanitation */
-	cleanEnv(containerName, envName)
-	deleteContainer(containerName)
-}
+// 	/* Apply function */
+// 	aErr := AddZipPackage(envName, source, pythonVersion)
+// 	if aErr != nil {
+// 		log.Println(aErr.Error())
+// 	}
+// 	/* Testing */
+// 	// Get existing environment names and check <envName> is in them
+// 	packages := GetExistingPackageNames(containerName, envName)
+// 	if !(StringInSlice(packageName, packages)) {
+// 		log.Fatalln(ErrEnvNotFound)
+// 	}
+// 	// defer this
+// 	/* Sanitation */
+// 	cleanEnv(containerName, envName)
+// 	deleteContainer(containerName)
+// }

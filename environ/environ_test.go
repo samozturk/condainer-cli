@@ -2,7 +2,10 @@ package environ
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"git.tazi.ai/samet/rte-cli/utils"
@@ -18,6 +21,8 @@ var (
 	cloneEnvName  = "clonetest"
 	homePath      = "/home/tazi"
 	pythonVersion = "3.8.3"
+	testPath      = "/Users/samet/Documents/Projects/rte-cli"
+	hostBindPath  = "/Users/samet/tmp/envs"
 )
 
 func init() {
@@ -94,4 +99,22 @@ func TestRemoveEnv(t *testing.T) {
 	}
 	/* Sanitation */
 	// utils.CleanEnv(containerName, envName)
+}
+
+func TestAddZipEnv(t *testing.T) {
+	zipEnvPath := testPath + "/goldenFiles/zipTestEnv.zip"
+	aErr := AddZipEnv(containerName, zipEnvPath, hostBindPath)
+	baseName := filepath.Base(zipEnvPath)                            // returns zipTestEnv.zip
+	fileName := strings.TrimSuffix(baseName, filepath.Ext(baseName)) // returns zipTestEnv
+	fileName = strings.TrimSpace(fileName)
+	fmt.Println(fileName)
+
+	if aErr != nil {
+		utils.ShowMessage(utils.ERROR, "Adding zipped environment failed.")
+		t.Errorf(aErr.Error())
+	}
+	envs := utils.GetExistingEnvNames(containerName)
+	if !utils.StringInSlice(fileName, envs) {
+		t.Errorf("%v couldn't be found in %v. Existing envs: %v", fileName, containerName, envs)
+	}
 }

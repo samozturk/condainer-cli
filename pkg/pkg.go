@@ -14,15 +14,19 @@ import (
 const envBindDir string = "$HOME/tmp/envs3"
 
 func AddPackage(containerName string, envName string, packageName string, homePath string) (string, error) {
-	var command string
-
-	command = "docker exec %v bash -c '%v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v'"
+	command := "docker exec %v bash -c '%v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v'"
 	cmdStr := fmt.Sprintf(command, containerName, homePath, homePath, envName, packageName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
 	utils.ShowMessage(utils.WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
+	out, stderr, err := utils.RunCommand(cmdStr)
+	if err == nil && stderr == "" {
+		fmt.Println(out)
+		utils.ShowMessage(utils.INFO, fmt.Sprintf("Added package %q to %q environment in %q container.", packageName, envName, containerName))
+		return out, err
+	} else {
+		utils.ShowMessage(utils.ERROR, stderr)
+	}
+	return out, err
 }
 
 func RemovePackage(containerName string, envName string, packageName string, homePath string) (string, error) {
@@ -30,9 +34,15 @@ func RemovePackage(containerName string, envName string, packageName string, hom
 	cmdStr := fmt.Sprintf(command, containerName, homePath, homePath, envName, packageName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
 	utils.ShowMessage(utils.WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
+	out, stderr, err := utils.RunCommand(cmdStr)
+	if err == nil && stderr == "" {
+		fmt.Println(out)
+		utils.ShowMessage(utils.INFO, fmt.Sprintf("Removed package %q to %q environment in %q container.", packageName, envName, containerName))
+		return out, err
+	} else {
+		utils.ShowMessage(utils.ERROR, stderr)
+	}
+	return out, err
 }
 
 func UpdatePackage(containerName string, envName string, packageName string, homePath string) (string, error) {
@@ -40,10 +50,16 @@ func UpdatePackage(containerName string, envName string, packageName string, hom
 	command := "docker exec %v bash -c '%v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v --upgrade'"
 	cmdStr := fmt.Sprintf(command, containerName, homePath, homePath, envName, packageName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	out, stderr, err := utils.RunCommand(cmdStr)
 	utils.ShowMessage(utils.WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
+	if err == nil && stderr == "" {
+		fmt.Println(out)
+		utils.ShowMessage(utils.INFO, fmt.Sprintf("Updated package %q to %q environment in %q container.", packageName, envName, containerName))
+		return out, err
+	} else {
+		utils.ShowMessage(utils.ERROR, stderr)
+	}
+	return out, err
 }
 
 func AddZipPackage(envName string, source string, pythonVersion string) error {
