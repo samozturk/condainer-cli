@@ -7,6 +7,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -55,7 +56,7 @@ func RunCommand(mainCmd string) (string, string, error) {
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 	err := cmd.Run()
-	if err != nil {
+	if err != nil && stderr.String() != "" {
 		infoMessage := fmt.Sprint(err) + ": " + stderr.String()
 		ShowMessage(ERROR, infoMessage)
 		return out.String(), stderr.String(), err
@@ -87,6 +88,7 @@ func GetPyVersion(version string) (int, int, int) {
 	}
 	return major, minor, patch
 }
+
 func CopyFile(src string, dst string) {
 	// Open original file
 	original, err := os.Open(src)
@@ -248,6 +250,91 @@ func Untar(sourcefile, dest string) {
 				fmt.Println(err)
 				os.Exit(1)
 			}
+		}
+	}
+}
+
+// MOVE THIS TO PKGS
+// Getting packages for offline use from HOST
+func SaveLocalPackages(envName string, dest string) {
+	_, _, err := GetReqFileFromLocalEnv(envName, dest)
+	if err != nil {
+		os.Exit(1)
+	}
+	cmdStr := fmt.Sprintf("mkdir %v/wheelhouse ; pip download -r %v/requirements.txt -d %v/wheelhouse", dest, dest, dest)
+	RunCommand(cmdStr)
+	ZipWriter("pymodules/wheelhose", "pymodules/wheelhouse.zip")
+}
+
+func GetReqFileFromLocalEnv(envName string, dest string) (string, string, error) {
+	cmdStr := fmt.Sprintf("mkdir pymodules; source activate %v; pip freeze > %v/requirements.txt", envName, dest)
+	out, stderr, err := RunCommand(cmdStr)
+	return out, stderr, err
+}
+
+// For zipping files
+func ZipWriter(baseFolder string, dest string) {
+	// Add slash just in case
+	baseFolder = baseFolder + "/"
+	// Get a Buffer to Write To
+	outFile, err := os.Create(dest)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer outFile.Close()
+
+	// Create a new zip archive.
+	w := zip.NewWriter(outFile)
+
+	// Add some files to the archive.
+	addFiles(w, baseFolder, "")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Make sure to check the error on Close.
+	err = w.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// We use this to iterate on files recursively to generate folders too:
+func addFiles(w *zip.Writer, basePath, baseInZip string) {
+	// Open the Directory
+	files, err := ioutil.ReadDir(basePath)
+	if err != nil {
+		fmt.Println(err)
+	}
+	// Iterate through files
+	for _, file := range files {
+		fmt.Println(basePath + file.Name())
+		if !file.IsDir() {
+			// Read binary data of the file
+			dat, err := ioutil.ReadFile(basePath + file.Name())
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			// Create some files in the archive.
+			f, err := w.Create(baseInZip + file.Name())
+			if err != nil {
+				fmt.Println(err)
+			}
+			// Write the binary data to created files in the archive
+			_, err = f.Write(dat)
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else if file.IsDir() {
+
+			// Recurse
+			newBase := basePath + file.Name() + "/"
+			fmt.Println("Recursing and Adding SubDir: " + file.Name())
+			fmt.Println("Recursing and Adding SubDir: " + newBase)
+
+			addFiles(w, newBase, baseInZip+file.Name()+"/")
 		}
 	}
 }

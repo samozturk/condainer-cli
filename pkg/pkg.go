@@ -99,3 +99,26 @@ func AddFromText(containerName string, envName string, source string, homePath s
 	return sOut, err
 
 }
+
+func GetPkgsFromContainer(containerName string, envName string, homePath string, dest string) (string, string, error) {
+	// If you get conda version error, use this: conda update -n base -c defaults conda
+	var endCmd string
+	if envName == "base" {
+		endCmd = fmt.Sprintf("%v/miniconda3/bin/pip list --format=freeze > requirements.txt; %v/miniconda3/bin/pip download -r requirements.txt -d wheelhouse; zip -r wheelhouse.zip wheelhouse",
+			homePath, homePath)
+	} else {
+		endCmd = "pip list --format=freeze > requirements.txt; pip download -r requirements.txt -d wheelhouse; zip -r wheelhouse.zip wheelhouse"
+	}
+
+	cmdStr := fmt.Sprintf(
+		"docker exec %v bash -c 'source activate %v; %v'",
+		containerName, envName, endCmd)
+	out, stderr, err := utils.RunCommand(cmdStr)
+	cmdStr = fmt.Sprintf("docker cp %v:%v/wheelhouse.zip %v/wheelhouse.zip", containerName, homePath, dest)
+	out, stderr, err = utils.RunCommand(cmdStr)
+	return out, stderr, err
+}
+
+func GetPkgsFromHost() {
+
+}
