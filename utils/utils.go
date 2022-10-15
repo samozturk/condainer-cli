@@ -263,12 +263,17 @@ func SaveLocalPackages(envName string, dest string) {
 	}
 	cmdStr := fmt.Sprintf("mkdir %v/wheelhouse ; pip download -r %v/requirements.txt -d %v/wheelhouse", dest, dest, dest)
 	RunCommand(cmdStr)
-	ZipWriter("pymodules/wheelhose", "pymodules/wheelhouse.zip")
+	ZipWriter(fmt.Sprintf("%v/wheelhouse", dest), fmt.Sprintf("%v/wheelhouse.zip", dest))
 }
 
 func GetReqFileFromLocalEnv(envName string, dest string) (string, string, error) {
-	cmdStr := fmt.Sprintf("mkdir pymodules; source activate %v; pip freeze > %v/requirements.txt", envName, dest)
+	cmdStr := fmt.Sprintf("mkdir %v; source activate %v; pip list --format=freeze > %v/requirements.txt", dest, envName, dest)
 	out, stderr, err := RunCommand(cmdStr)
+	// Check if 'envName' is in current environments in the future
+	// Currently if envName is not present, it returns base libraries
+	if err == nil {
+		ShowMessage(INFO, fmt.Sprintf("%v/requirements.txt", dest))
+	}
 	return out, stderr, err
 }
 

@@ -1,12 +1,32 @@
-##rte-cli command line tool
-rte-cli is a utility for handling python runtime environment in containers for tazi. 
 
-It allows you to **create** a conda environment, **clone** it and **add**/**remove** packages to/from specified environment.
+<h1 align="center">
+rte-cli Command Line Tool
+</h1>
+
+<p align="center">
+<img src="resources/rte-cli-logo.png" alt="rte-cli logo" width="300" />
+</p>
+
+rte-cli is a utility for handling python runtime environment in containers for tazi. It has features to manage conda environments, python packages etc.
+
+**<u>Environments</u>**:
+ It enables you to **create** a conda environment, **clone** it and **add**/**remove** packages to/from specified environment.
+**<u>Packages</u>**:
+It enables you to **install, remove, update** a package or **export environment packages** and **install for offline use**.
+
 
 You can customize environment or package using a command line flag.
 
-_Note: No matter in which container you install the package, all environments are shared between containers using mounting a volume. Environments stored under `$HOME/tmp/envs` via volume binding._
+_Note: No matter in which container you install the package, all environments are shared between containers using mounting a volume binding._
 <br>
+
+#### Version 2.0
+- More verbose errors
+- More reliable subcommands
+- Container home path(WORKDIR) is now customizable; not fixed to "/home/tazi".
+- Volume binding path is now customizable, not fixed to "/tmp/envs/"
+- You can now download python packages to your local environment. Then you can use them in an offline environment with rte-cli.(Only for macOs and Linux users)
+
 Usage:
   ```rte-cli [command]```
 

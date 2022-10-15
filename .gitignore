@@ -1,6 +1,6 @@
 .DS_Store
 rte-cli/sample_package.zip
 rte-cli/.DS_Storegit ad
-goldenFIles/*
+goldenFIles/zipTestEnv.zip
 */.DS_Store
 pymodules/*

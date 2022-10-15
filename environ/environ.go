@@ -69,11 +69,13 @@ func AddZipEnv(containerName string, source string, hostBindPath string) error {
 		err := utils.UnzipSource(source, dest)
 		if err != nil {
 			utils.ShowMessage(utils.ERROR, fmt.Sprintf("%q", err.Error()))
+			utils.ShowMessage(utils.WARNING, "This subcommand is deprecated. Please use 'addZipPackages' subcommmand under 'package' command.")
 		}
 		return err
 	} else if fileExt == "tar" {
 		utils.ShowMessage(utils.WARNING, fmt.Sprintf("Copying to %q", dest))
 		utils.Untar(source, dest)
+		utils.ShowMessage(utils.WARNING, "This subcommand is deprecated. Please use 'addZipPackages' subcommmand under 'package' command.")
 	} else {
 		utils.ShowMessage(utils.ERROR, fmt.Sprintf("%v extension is not supported.", fileExt))
 	}

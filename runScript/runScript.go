@@ -9,7 +9,7 @@ import (
 	"git.tazi.ai/samet/rte-cli/utils"
 )
 
-func RunPy(containerName string, envName string, source string, homePath string) (string, error) {
+func RunPy(containerName string, envName string, source string, homePath string) (string, string, error) {
 	// Get file extension
 	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
 	// Check file format
@@ -23,9 +23,7 @@ func RunPy(containerName string, envName string, source string, homePath string)
 
 	out, stderr, err := utils.RunCommand(cmdStr)
 	if err == nil {
-		fmt.Println(out, stderr)
 		utils.ShowMessage(utils.INFO, "Script Ran.")
 	}
-	return out, err
-
+	return out, stderr, err
 }

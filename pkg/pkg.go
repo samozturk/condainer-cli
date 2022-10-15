@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -62,27 +61,54 @@ func UpdatePackage(containerName string, envName string, packageName string, hom
 	return out, err
 }
 
-func AddZipPackage(envName string, source string, pythonVersion string) error {
-	// Get file extension
-	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
-	// Get home directory
-	homedir, hErr := os.UserHomeDir()
-	if hErr != nil {
-		log.Fatal(hErr)
+// func AddZipPackage(envName string, source string, pythonVersion string) error {
+// 	// Get file extension
+// 	fileExt := strings.TrimPrefix(filepath.Ext(source), ".")
+// 	// Get home directory
+// 	homedir, hErr := os.UserHomeDir()
+// 	if hErr != nil {
+// 		log.Fatal(hErr)
+// 	}
+
+// 	major, minor, _ := utils.GetPyVersion(pythonVersion)
+
+// 	dest := fmt.Sprintf("%v/tmp/envs/%v/lib/python%d.%d/site-packages", homedir, envName, major, minor)
+// 	if fileExt == "zip" {
+// 		utils.ShowMessage(utils.WARNING, dest)
+// 		utils.UnzipSource(source, dest)
+// 		return nil
+// 	} else if fileExt == "tar" {
+// 		utils.ShowMessage(utils.WARNING, dest)
+// 		utils.Untar(source, dest)
+// 	}
+// 	return nil
+// }
+
+func AddZipPackages(containerName string, envName string, homePath string, source string) (string, string, error) {
+
+	ext := filepath.Ext(source)
+	sourceFileName := strings.TrimSuffix(filepath.Base(source), ext)
+	// Checkings
+	envs := utils.GetExistingEnvNames(containerName)
+	if !utils.StringInSlice(envName, envs) {
+		utils.ShowMessage(utils.ERROR, fmt.Sprintf("%v not present in current environments:%v", envName, envs))
+		os.Exit(1)
 	}
 
-	major, minor, _ := utils.GetPyVersion(pythonVersion)
-
-	dest := fmt.Sprintf("%v/tmp/envs/%v/lib/python%d.%d/site-packages", homedir, envName, major, minor)
-	if fileExt == "zip" {
-		utils.ShowMessage(utils.WARNING, dest)
-		utils.UnzipSource(source, dest)
-		return nil
-	} else if fileExt == "tar" {
-		utils.ShowMessage(utils.WARNING, dest)
-		utils.Untar(source, dest)
+	// Copy zipped wheelfiles to container
+	copyCmd := fmt.Sprintf("docker cp %v %v:%v/%v%v", source, containerName, homePath, sourceFileName, ext)
+	utils.ShowMessage(utils.WARNING, fmt.Sprintf("Running the command: %v", copyCmd))
+	out, stderr, err := utils.RunCommand(copyCmd)
+	if err != nil && stderr != "" {
+		return out, stderr, err
 	}
-	return nil
+	installCmd := fmt.Sprintf("pip install --no-index --find-links %v/%v/ -r %v/%v/requirements.txt", homePath, sourceFileName, homePath, sourceFileName)
+	command := fmt.Sprintf("docker exec %v bash -c 'unzip %v/%v; %v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; %v'",
+		containerName, homePath, sourceFileName, homePath, homePath, envName, installCmd)
+	utils.ShowMessage(utils.WARNING, fmt.Sprintf("Running the command: %v", command))
+	out, stderr, err = utils.RunCommand(command)
+	return out, stderr, err
+
 }
 
 func AddFromText(containerName string, envName string, source string, homePath string, hostBindPath string) (string, error) {
@@ -104,21 +130,29 @@ func GetPkgsFromContainer(containerName string, envName string, homePath string,
 	// If you get conda version error, use this: conda update -n base -c defaults conda
 	var endCmd string
 	if envName == "base" {
-		endCmd = fmt.Sprintf("%v/miniconda3/bin/pip list --format=freeze > requirements.txt; %v/miniconda3/bin/pip download -r requirements.txt -d wheelhouse; zip -r wheelhouse.zip wheelhouse",
-			homePath, homePath)
+		endCmd = fmt.Sprintf("%v/miniconda3/bin/pip list --format=freeze > requirements.txt; %v/miniconda3/bin/pip download -r requirements.txt -d wheelhouse; mv %v/requirements.txt %v/wheelhouse/requirements.txt; zip -r wheelhouse.zip wheelhouse",
+			homePath, homePath, homePath, homePath)
 	} else {
-		endCmd = "pip list --format=freeze > requirements.txt; pip download -r requirements.txt -d wheelhouse; zip -r wheelhouse.zip wheelhouse"
+		endCmd = fmt.Sprintf("pip list --format=freeze > requirements.txt; pip download -r requirements.txt -d wheelhouse; mv %v/requirements.txt %v/wheelhouse/requirements.txt; zip -r wheelhouse.zip wheelhouse",
+			homePath, homePath)
 	}
 
 	cmdStr := fmt.Sprintf(
 		"docker exec %v bash -c 'source activate %v; %v'",
 		containerName, envName, endCmd)
 	out, stderr, err := utils.RunCommand(cmdStr)
-	cmdStr = fmt.Sprintf("docker cp %v:%v/wheelhouse.zip %v/wheelhouse.zip", containerName, homePath, dest)
+	cmdStr = fmt.Sprintf("mkdir %v ; docker cp %v:%v/wheelhouse.zip %v/wheelhouse.zip", dest, containerName, homePath, dest)
 	out, stderr, err = utils.RunCommand(cmdStr)
 	return out, stderr, err
 }
 
-func GetPkgsFromHost() {
+func GetPkgsFromHost(envName string, dest string) {
+	_, _, err := utils.GetReqFileFromLocalEnv(envName, dest)
+	if err != nil {
+		os.Exit(1)
+	}
+	cmdStr := fmt.Sprintf("mkdir %v/wheelhouse ; pip download -r %v/requirements.txt -d %v/wheelhouse", dest, dest, dest)
+	utils.RunCommand(cmdStr)
+	utils.ZipWriter("%v/wheelhose", "%v/wheelhouse.zip")
 
 }

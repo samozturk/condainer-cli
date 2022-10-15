@@ -17,6 +17,7 @@ const TestContainerUrl string = "registry.tazi.ai/base:2.0"
 func RunContainer(containerName string) {
 	// Run a container to test commands
 	rCommand := fmt.Sprintf("docker run -t --rm -d -v $HOME/tmp/envs:/home/tazi/miniconda3/envs --name %v %v /bin/bash", containerName, TestContainerUrl)
+	ShowMessage(WARNING, rCommand)
 	_, _, err := RunCommand(rCommand)
 	// Error Handling //
 	if err != nil {
@@ -38,6 +39,7 @@ func StopContainer(containerName string) {
 	}
 }
 
+// Create environment for testing
 func CreateTestEnv(containerName string, envName string, pythonVersion string, homePath string) (string, error) {
 	maj, min, _ := GetPyVersion(pythonVersion)
 	shortCmd := fmt.Sprintf("%v/miniconda3/bin/conda create -y -p %v/miniconda3/envs/%v python=%d.%d pip", homePath, homePath, envName, maj, min)
@@ -52,7 +54,6 @@ func CreateTestEnv(containerName string, envName string, pythonVersion string, h
 	return out, err
 }
 
-//refactored
 func CleanEnv(containerName string, envName string) {
 	// Clean environment after testing for sanitation
 	cCommand := "docker exec %v /bin/bash -c '/home/tazi/miniconda3/bin/conda env remove -n %v'"
@@ -66,8 +67,21 @@ func CleanEnv(containerName string, envName string) {
 		ShowMessage(INFO, fmt.Sprintf("%v Environment Deleted", envName))
 	}
 }
-
-// no need for refactoring
+func AddTestPackage(containerName string, envName string, packageName string, homePath string) (string, string, error) {
+	command := "docker exec %v bash -c '%v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install %v'"
+	cmdStr := fmt.Sprintf(command, containerName, homePath, homePath, envName, packageName)
+	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
+	ShowMessage(WARNING, infoMessage)
+	out, stderr, err := RunCommand(cmdStr)
+	if err == nil && stderr == "" {
+		fmt.Println(out)
+		ShowMessage(INFO, fmt.Sprintf("Added package %q to %q environment in %q container.", packageName, envName, containerName))
+		return out, stderr, err
+	} else {
+		ShowMessage(ERROR, stderr)
+	}
+	return out, stderr, err
+}
 func StringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
@@ -77,7 +91,6 @@ func StringInSlice(a string, list []string) bool {
 	return false
 }
 
-// passed for refactoring
 func GetExistingEnvNames(containerName string) []string {
 	envs := make([]string, 1)
 	command := fmt.Sprintf("docker exec %v bash -c '/home/tazi/miniconda3/bin/conda env list'", containerName)
@@ -96,7 +109,6 @@ func GetExistingEnvNames(containerName string) []string {
 	return envs
 }
 
-// Refactored
 func GetExistingPackageNames(containerName string, envName string) []string {
 	envs := make([]string, 1)
 	command := "docker exec %v bash -c '/home/tazi/miniconda3/bin/conda init; source /home/tazi/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip list'"

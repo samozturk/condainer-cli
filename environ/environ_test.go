@@ -26,6 +26,7 @@ var (
 )
 
 func init() {
+	// parameterize this.
 	utils.RunCommand("rm -rf $HOME/tmp/envs/*")
 	utils.StopContainer(containerName)
 	utils.RunContainer(containerName)
