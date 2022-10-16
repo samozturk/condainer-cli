@@ -87,7 +87,7 @@ func UpdatePackage(containerName string, envName string, packageName string, hom
 func AddZipPackages(containerName string, envName string, homePath string, source string) (string, string, error) {
 
 	ext := filepath.Ext(source)
-	sourceFileName := strings.TrimSuffix(filepath.Base(source), ext)
+	sourceFileName := strings.TrimSuffix(filepath.Base(source), ext) // ??
 	// Checkings
 	envs := utils.GetExistingEnvNames(containerName)
 	if !utils.StringInSlice(envName, envs) {
@@ -111,19 +111,26 @@ func AddZipPackages(containerName string, envName string, homePath string, sourc
 
 }
 
-func AddFromText(containerName string, envName string, source string, homePath string, hostBindPath string) (string, error) {
-	// Copy requirements.txt to miniconda3/envs/ which is a shared directory
-	dst := fmt.Sprintf("%v/envs/%v/requirements.txt", hostBindPath, envName)
-	utils.CopyFile(source, dst)
-	// activate environment name and execute pip install requirements.txt √
-	command := "docker exec %v bash -c '%v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install -r %v/miniconda3/envs/%v/requirements.txt'"
-	cmdStr := fmt.Sprintf(command, containerName, homePath, homePath, envName, homePath, envName)
+func AddFromText(containerName string, envName string, source string, homePath string) (string, string, error) {
+	fileName := filepath.Base(source)
+	envs := utils.GetExistingEnvNames(containerName)
+	if !utils.StringInSlice(envName, envs) {
+		utils.ShowMessage(utils.ERROR, fmt.Sprintf("%v not present in current environments:%v", envName, envs))
+		os.Exit(1)
+	}
+	cpCmd := fmt.Sprintf("docker cp %v %v:%v/%v", source, containerName, homePath, source)
+	_, _, err := utils.RunCommand(cpCmd)
+	if err != nil {
+		utils.ShowMessage(utils.ERROR, "Couldn't copy requirements file to container.")
+	}
+	// activate environment name and execute pip install requirements.txt
+	cmdStr := fmt.Sprintf("docker exec %v bash -c '%v/miniconda3/bin/conda init; source %v/miniconda3/etc/profile.d/conda.sh; conda activate %v; pip install -r %v/%v'",
+		containerName, homePath, homePath, envName, homePath, fileName)
 	infoMessage := fmt.Sprintf("Running the command: %v", cmdStr)
 	utils.ShowMessage(utils.WARNING, infoMessage)
-	out, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	sOut := fmt.Sprintf("%s", out)
-	return sOut, err
+	out, stderr, err := utils.RunCommand(cmdStr)
 
+	return out, stderr, err
 }
 
 func GetPkgsFromContainer(containerName string, envName string, homePath string, dest string) (string, string, error) {

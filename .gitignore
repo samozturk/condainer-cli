@@ -4,3 +4,4 @@ rte-cli/.DS_Storegit ad
 goldenFIles/zipTestEnv.zip
 */.DS_Store
 pymodules/*
+.mypy_cache
