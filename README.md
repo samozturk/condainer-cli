@@ -27,6 +27,32 @@ _Note: No matter in which container you install the package, all environments ar
 - Volume binding path is now customizable, not fixed to "/tmp/envs/"
 - You can now download python packages to your local environment. Then you can use them in an offline environment with rte-cli.(Only for macOs and Linux users)
 
+``` mermaid
+classDiagram
+direction TB
+    rte_cli --|> environ
+    rte_cli --|> package
+    rte_cli --|> run
+    rte_cli : main command
+    class environ{  
+        subcommand for managing environments
+        create()
+        clone()
+        addZipEnv  () 
+    }
+    class package{
+        subcommand for managing packages
+        add()
+        update()
+        remove()
+        getZip()
+        
+    }
+    class run{
+        subcommand for running scripts
+        runPy
+    }
+```
 Usage:
   ```rte-cli [command]```
 

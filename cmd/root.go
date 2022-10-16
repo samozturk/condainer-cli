@@ -60,6 +60,8 @@ func init() {
 	rootCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
 	rootCmd.PersistentFlags().StringP("homePath", "h", "/home/tazi", "home path for container, default: /home/tazi")
 	rootCmd.PersistentFlags().StringP("hostBindPath", "b", "/tmp/envs", "where you bind the host to container, default: /tmp/envs")
+	rootCmd.PersistentFlags().BoolP("local", "l", true, "from where to get packages and zip. true means from local, false means from a container.")
+	rootCmd.PersistentFlags().StringP("destination", "d", "", "to where to save the zipped packages: /tmp/envs")
 
 	rootCmd.MarkPersistentFlagRequired("container")
 	rootCmd.MarkPersistentFlagRequired("envName")

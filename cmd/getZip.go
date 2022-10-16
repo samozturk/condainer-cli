@@ -12,16 +12,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// installReqCmd represents the installReq command
-var installReqCmd = &cobra.Command{
-	Use:   "installReq",
-	Short: "Use requirements.txt file to install packages",
+// getZipCmd represents the getZip command
+var getZipCmd = &cobra.Command{
+	Use:   "getZip",
+	Short: "Zip python packages of an environment for offline use",
 	Long:  ``,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		source, sErr := cmd.Flags().GetString("requirementsFile")
 		homePath, hErr := cmd.Flags().GetString("homePath")
+		local, lErr := cmd.Flags().GetBool("local")
+		dest, dErr := cmd.Flags().GetString("destination")
 		if hErr != nil {
 			return hErr
 		}
@@ -34,7 +36,16 @@ var installReqCmd = &cobra.Command{
 		if sErr != nil {
 			return sErr
 		}
-		cloneErr := AddFromTextAction(containerName, envName, source, homePath)
+		if lErr != nil {
+			return lErr
+		}
+		if lErr != nil {
+			return lErr
+		}
+		if dErr != nil {
+			return dErr
+		}
+		cloneErr := getZipAction(containerName, envName, source, homePath, local, dest)
 		return cloneErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
@@ -47,25 +58,36 @@ var installReqCmd = &cobra.Command{
 }
 
 func init() {
-	packageCmd.AddCommand(installReqCmd)
+	packageCmd.AddCommand(getZipCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// installReqCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// getZipCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// installReqCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// getZipCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func AddFromTextAction(containerName string, envName string, source string, homePath string) error {
-	stdOut, stderr, err := pkg.AddFromText(containerName, envName, source, homePath)
-	if err != nil {
-		utils.ShowMessage(utils.ERROR, fmt.Sprintf("stdout: %v \n stderr: %v", stdOut, stderr))
-		return err
+func getZipAction(containerName string, envName string, source string, homePath string, local bool, dest string) error {
+	if local {
+		stdout, stderr, err := pkg.GetPkgsFromHost(envName, dest)
+		if err != nil {
+			utils.ShowMessage(utils.ERROR, fmt.Sprintf("stdout: %v \n stderr: %v", stdout, stderr))
+			return err
+		} else {
+			return nil
+		}
 	} else {
-		return nil
+		stdout, stderr, err := pkg.GetPkgsFromContainer(containerName, envName, homePath, dest)
+		if err != nil {
+			utils.ShowMessage(utils.ERROR, fmt.Sprintf("stdout: %v \n stderr: %v", stdout, stderr))
+			return err
+		} else {
+			return nil
+		}
 	}
+
 }

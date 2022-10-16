@@ -83,6 +83,7 @@ func UpdatePackage(containerName string, envName string, packageName string, hom
 // 	return nil
 // }
 
+// Take a zipped wheelhouse file, copies into container and install them for offline use
 func AddZipPackages(containerName string, envName string, homePath string, source string) (string, string, error) {
 
 	ext := filepath.Ext(source)
@@ -152,13 +153,15 @@ func GetPkgsFromContainer(containerName string, envName string, homePath string,
 	return out, stderr, err
 }
 
-func GetPkgsFromHost(envName string, dest string) {
-	_, _, err := utils.GetReqFileFromLocalEnv(envName, dest)
+func GetPkgsFromHost(envName string, dest string) (string, string, error) {
+	out, stderr, err := utils.GetReqFileFromLocalEnv(envName, dest)
 	if err != nil {
 		os.Exit(1)
 	}
 	cmdStr := fmt.Sprintf("mkdir %v/wheelhouse ; pip download -r %v/requirements.txt -d %v/wheelhouse", dest, dest, dest)
 	utils.RunCommand(cmdStr)
 	utils.ZipWriter("%v/wheelhose", "%v/wheelhouse.zip")
-
+	return out, stderr, err
 }
+
+// Write test for GetPkgsFromContainer, GetPkgsFromHost

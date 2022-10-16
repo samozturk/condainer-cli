@@ -10,4 +10,5 @@ func main() {
 	cmd.Execute()
 }
 
-// TODO: Add mandatory flags
+// TODO: handle flags, mandatory flags etc.
+// TODO: FInish utils package's tests

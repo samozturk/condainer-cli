@@ -10,9 +10,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// AddZipEnvCmd represents the AddZipEnv command
-var AddZipEnvCmd = &cobra.Command{
-	Use:   "AddZipEnv",
+// addZipEnvCmd represents the AddZipEnv command
+var addZipEnvCmd = &cobra.Command{
+	Use:   "addZipEnv",
 	Short: "Add conda environment from a zip file",
 	Long:  `Add zipped conda environment file to the specified container`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -34,17 +34,17 @@ var AddZipEnvCmd = &cobra.Command{
 }
 
 func init() {
-	environCmd.AddCommand(AddZipEnvCmd)
+	environCmd.AddCommand(addZipEnvCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// AddZipEnvCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// addZipEnvCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// AddZipEnvCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// addZipEnvCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func addZipEnvAction(containerName string, source string, hostBindPath string) error {

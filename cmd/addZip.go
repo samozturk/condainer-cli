@@ -5,7 +5,10 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"git.tazi.ai/samet/rte-cli/environ"
+	"fmt"
+
+	"git.tazi.ai/samet/rte-cli/pkg"
+	"git.tazi.ai/samet/rte-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,13 +18,16 @@ var addZipCmd = &cobra.Command{
 	Short: "Add a package to a environment from compressed file",
 	Long:  "### Python packages ### \n Python packages can be installed manually. For that, wheel files needed which can be found at https://pypi.org/simple/<package_name>  Simply find appropriate version and architecture.\n Or pip can do it for you. ```python -m pip download --only-binary :all: --dest . --no-cache <package_name> ``` \n Downloaded file can tarbal or wheel. If that's a tarball, untar it and find the setup.py \n in setup.py, you can dependency files with regex ```install_requires=\\[:*(.*?)\\]``` \n  If that's a whl; first unzip the whl file. Whl files are pretty much like zip files. It will yield two folders: one is named as <package_name> other is <{package_name}-{version}.dist-info>. Inside the latter, there is a file called METADATA. You can parse neccessary libraries from METADA using this regex ```Requires-Dist:\\s:*(.*?)\n```. All dependencies needs to be installed before installing the package. Also you need to install dependencies of dependencies and so on.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		//containerName, cErr := cmd.Flags().GetString("container")
+		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
 		source, pErr := cmd.Flags().GetString("sourceFile")
-		pythonVersion, vErr := cmd.Flags().GetString("pythonVersion")
+		homePath, hErr := cmd.Flags().GetString("homePath")
 
-		if vErr != nil {
-			return vErr
+		if cErr != nil {
+			return cErr
+		}
+		if hErr != nil {
+			return hErr
 		}
 		if eErr != nil {
 			return eErr
@@ -29,7 +35,7 @@ var addZipCmd = &cobra.Command{
 		if pErr != nil {
 			return pErr
 		}
-		err := AddZipAction(envName, source, pythonVersion)
+		err := AddZipAction(containerName, envName, homePath, source)
 		return err
 	},
 }
@@ -48,10 +54,10 @@ func init() {
 	// addZipCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func AddZipAction(envName string, source string, pythonVersion string) error {
-	err := environ.AddZipPackage(envName, source, pythonVersion)
+func AddZipAction(containerName string, envName string, homePath string, source string) error {
+	out, stderr, err := pkg.AddZipPackages(containerName, envName, homePath, source)
 	if err != nil {
-		environ.ShowMessage(environ.ERROR, err.Error())
+		utils.ShowMessage(utils.ERROR, fmt.Sprintf("stdout: %v \n stderr: %v", out, stderr))
 	}
 	return err
 }

@@ -155,5 +155,3 @@ func DeletePackage(packageName string, envName string) {
 		log.Println(cOutStr, '\n', cErr.Error())
 	}
 }
-
-//TODO: define an init function to start a container.
