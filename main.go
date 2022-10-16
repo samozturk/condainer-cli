@@ -12,3 +12,4 @@ func main() {
 
 // TODO: handle flags, mandatory flags etc.
 // TODO: FInish utils package's tests
+// TODO: Fix documentation
