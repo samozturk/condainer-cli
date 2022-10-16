@@ -78,6 +78,13 @@ Clone environment name: my_clone_env
 
 ```rte-cli environ clone --container my_cont --envName my_env --newEnvName my_clone_env```
 
+ - **To copy zipped environment in a container:**
+Environment name: my_env
+Container name: my_cont
+Zipped environment file: zipped_env.zip
+
+```rte-cli environ AddZipEnv --container my_cont --envName my_env --sourceFile zipped_env.zip```
+
 #### Package Related ####
  - **To install a package**
 Environment name: my_env

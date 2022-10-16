@@ -81,8 +81,3 @@ func AddZipEnv(containerName string, source string, hostBindPath string) error {
 	}
 	return nil
 }
-
-// TODO: use pip install for *.whl files
-// TODO: Fix AddZipPackage. parameterize it, add hostPath flag
-// TODO: write tests
-// TODO: write CI pipeline

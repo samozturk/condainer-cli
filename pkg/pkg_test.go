@@ -18,6 +18,8 @@ var (
 	packageName   = "numpy"
 	source        = testPath + "/goldenFiles/wheelhouse.zip"
 	zippedPackage = "black"
+	reqFile       = testPath + "/goldenFiles/requirements.txt"
+	reqPackage    = packageName
 )
 
 func init() {
@@ -59,17 +61,28 @@ func init() {
 
 // }
 
-func TestAddZipPackages(t *testing.T) {
-	/* Apply function */
-	out, stderr, err := AddZipPackages(containerName, envName, homePath, source)
-	if err != nil {
-		t.Error(out, "--", stderr)
-	}
-	/* Testing */
-	// Get existing environment names and check <envName> is in them
-	packages := utils.GetExistingPackageNames(containerName, envName)
-	if !utils.StringInSlice(zippedPackage, packages) {
-		t.Errorf("%q is not present in %v", zippedPackage, packages)
-	}
+// func TestAddZipPackages(t *testing.T) {
+// 	/* Apply function */
+// 	out, stderr, err := AddZipPackages(containerName, envName, homePath, source)
+// 	if err != nil {
+// 		t.Error(out, "--", stderr)
+// 	}
+// 	/* Testing */
+// 	// Get existing environment names and check <envName> is in them
+// 	packages := utils.GetExistingPackageNames(containerName, envName)
+// 	if !utils.StringInSlice(zippedPackage, packages) {
+// 		t.Errorf("%q is not present in %v", zippedPackage, packages)
+// 	}
 
+// }
+
+func TestAddFromTest(t *testing.T) {
+	out, stderr, err := AddFromText(containerName, envName, reqFile, homePath)
+	if err != nil {
+		t.Error(out, "---", stderr)
+	}
+	packages := utils.GetExistingPackageNames(containerName, envName)
+	if !utils.StringInSlice(reqPackage, packages) {
+		t.Errorf("%q is not present in %v", reqPackage, packages)
+	}
 }

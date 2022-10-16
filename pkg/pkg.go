@@ -3,7 +3,6 @@ package pkg
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -118,7 +117,7 @@ func AddFromText(containerName string, envName string, source string, homePath s
 		utils.ShowMessage(utils.ERROR, fmt.Sprintf("%v not present in current environments:%v", envName, envs))
 		os.Exit(1)
 	}
-	cpCmd := fmt.Sprintf("docker cp %v %v:%v/%v", source, containerName, homePath, source)
+	cpCmd := fmt.Sprintf("docker cp %v %v:%v/%v", source, containerName, homePath, fileName)
 	_, _, err := utils.RunCommand(cpCmd)
 	if err != nil {
 		utils.ShowMessage(utils.ERROR, "Couldn't copy requirements file to container.")

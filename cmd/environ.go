@@ -30,4 +30,10 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// environCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	environCmd.PersistentFlags().StringP("packageName", "p", "", "package name")
+	environCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
+	environCmd.PersistentFlags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	environCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
+	environCmd.PersistentFlags().StringP("homePath", "h", "/home/tazi", "home path for container, default: /home/tazi")
+	environCmd.PersistentFlags().StringP("hostBindPath", "b", "/tmp/envs", "where you bind the host to container, default: /tmp/envs")
 }
