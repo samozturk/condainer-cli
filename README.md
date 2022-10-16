@@ -50,7 +50,7 @@ direction TB
     }
     class run{
         subcommand for running scripts
-        runPy
+        runPy()
     }
 ```
 Usage:

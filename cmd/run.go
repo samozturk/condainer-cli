@@ -62,11 +62,9 @@ func init() {
 }
 
 func runAction(containerName string, envName string, source string, homePath string) error {
-	stOut, err := runScript.RunPy(containerName, envName, source, homePath)
+	stdout, stderr, err := runScript.RunPy(containerName, envName, source, homePath)
 	if err != nil {
-		utils.ShowMessage(utils.ERROR, err.Error())
-		utils.ShowMessage(utils.ERROR, stOut)
-
+		utils.ShowMessage(utils.ERROR, fmt.Sprintf("out: %v \n err: %v", stdout, stderr))
 		return err
 	} else {
 		return nil
