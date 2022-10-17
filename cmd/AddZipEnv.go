@@ -45,6 +45,10 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// addZipEnvCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	addZipEnvCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	addZipEnvCmd.Flags().StringP("hostBindPath", "b", "/tmp/envs", "where you bind the host to container, default: /tmp/envs")
+	addZipEnvCmd.MarkPersistentFlagRequired("sourceFile")
+	addZipEnvCmd.MarkPersistentFlagRequired("hostBindPath")
 }
 
 func addZipEnvAction(containerName string, source string, hostBindPath string) error {

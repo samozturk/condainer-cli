@@ -65,6 +65,7 @@ func init() {
 
 	rootCmd.MarkPersistentFlagRequired("container")
 	rootCmd.MarkPersistentFlagRequired("envName")
+	rootCmd.MarkPersistentFlagRequired("homePath")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

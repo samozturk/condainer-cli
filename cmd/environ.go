@@ -29,6 +29,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// environCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	environCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
-	environCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
+
 }

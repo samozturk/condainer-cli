@@ -58,6 +58,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	createCmd.Flags().StringP("pythonVersion", "v", "3.8", "Python version")
+	createCmd.MarkPersistentFlagRequired("pythonVersion")
 }
 
 func createAction(containerName string, envName string, pythonVersion string, homePath string) error {
@@ -65,7 +67,6 @@ func createAction(containerName string, envName string, pythonVersion string, ho
 	if err != nil {
 		utils.ShowMessage(utils.ERROR, err.Error())
 		utils.ShowMessage(utils.ERROR, stOut)
-
 		return err
 	} else {
 		return nil

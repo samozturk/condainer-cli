@@ -27,3 +27,6 @@ func RunPy(containerName string, envName string, source string, homePath string)
 	}
 	return out, stderr, err
 }
+
+// TODO: make this a subcommand.
+// TODO: add r script running function

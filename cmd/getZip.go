@@ -45,8 +45,8 @@ var getZipCmd = &cobra.Command{
 		if dErr != nil {
 			return dErr
 		}
-		cloneErr := getZipAction(containerName, envName, source, homePath, local, dest)
-		return cloneErr
+		getErr := getZipAction(containerName, envName, source, homePath, local, dest)
+		return getErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		containerName, _ := cmd.Flags().GetString("container")
@@ -69,6 +69,12 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// getZipCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	getZipCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	getZipCmd.Flags().BoolP("local", "l", true, "from where to get packages and zip. true means from local, false means from a container.")
+	getZipCmd.Flags().StringP("destination", "d", "", "to where to save the exported packages")
+	getZipCmd.MarkPersistentFlagRequired("sourceFile")
+	getZipCmd.MarkPersistentFlagRequired("local")
+	getZipCmd.MarkPersistentFlagRequired("destination")
 }
 
 func getZipAction(containerName string, envName string, source string, homePath string, local bool, dest string) error {

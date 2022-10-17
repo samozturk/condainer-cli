@@ -58,6 +58,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// updateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	updateCmd.Flags().StringP("packageName", "p", "", "package name")
+	updateCmd.MarkPersistentFlagRequired("packageName")
 }
 
 func updateAction(containerName string, envName string, packageName string, homePath string) error {

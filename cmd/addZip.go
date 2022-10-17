@@ -52,6 +52,13 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// addZipCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	addZipCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	addZipCmd.Flags().BoolP("local", "l", true, "from where to get packages and zip. true means from local, false means from a container.")
+	addZipCmd.Flags().StringP("destination", "d", "", "to where to save the exported packages")
+	addZipCmd.MarkPersistentFlagRequired("sourceFile")
+	addZipCmd.MarkPersistentFlagRequired("local")
+	addZipCmd.MarkPersistentFlagRequired("destination")
+
 }
 
 func AddZipAction(containerName string, envName string, homePath string, source string) error {

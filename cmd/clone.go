@@ -58,6 +58,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	createCmd.Flags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
+	createCmd.MarkPersistentFlagRequired("newEnvName")
 }
 
 func cloneAction(containerName string, envName string, newEnvName string, homePath string) error {

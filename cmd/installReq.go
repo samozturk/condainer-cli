@@ -34,8 +34,8 @@ var installReqCmd = &cobra.Command{
 		if sErr != nil {
 			return sErr
 		}
-		cloneErr := AddFromTextAction(containerName, envName, source, homePath)
-		return cloneErr
+		addErr := AddFromTextAction(containerName, envName, source, homePath)
+		return addErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		containerName, _ := cmd.Flags().GetString("container")
@@ -58,6 +58,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// installReqCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	installReqCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	installReqCmd.MarkPersistentFlagRequired("sourceFile")
+
 }
 
 func AddFromTextAction(containerName string, envName string, source string, homePath string) error {
