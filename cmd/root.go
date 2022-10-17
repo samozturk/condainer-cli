@@ -25,7 +25,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "rte-cli",
 	Short:   "A brief description of your application",
-	Version: "1.0.0",
+	Version: "2.0.0",
 	Long: `rte-cli is a utility for handling python runtime environment in containers for tazi. 
 	
 It allows you to create a conda environment, delete it, clone it and add/remove packages to/from specified environment.
@@ -53,15 +53,15 @@ func init() {
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.rte-cli.yaml)")
 	rootCmd.PersistentFlags().StringP("container", "c", "", "container name")
 	rootCmd.PersistentFlags().StringP("envName", "e", "base", "conda environment name, default: base")
-	rootCmd.PersistentFlags().StringP("packageName", "p", "", "package name")
-	rootCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
+	// rootCmd.PersistentFlags().StringP("packageName", "p", "", "package name")
+	// rootCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
 	rootCmd.PersistentFlags().StringP("sourceFile", "f", "", "path of compressed package directory")
-	rootCmd.PersistentFlags().StringP("requirementsFile", "r", "", "path of requirements txt")
-	rootCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
-	rootCmd.PersistentFlags().StringP("homePath", "h", "/home/tazi", "home path for container, default: /home/tazi")
+	// rootCmd.PersistentFlags().StringP("requirementsFile", "r", "", "path of requirements txt")
+	// rootCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
+	rootCmd.PersistentFlags().StringP("homePath", "m", "/home/tazi", "home path for container, default: /home/tazi")
 	rootCmd.PersistentFlags().StringP("hostBindPath", "b", "/tmp/envs", "where you bind the host to container, default: /tmp/envs")
 	rootCmd.PersistentFlags().BoolP("local", "l", true, "from where to get packages and zip. true means from local, false means from a container.")
-	rootCmd.PersistentFlags().StringP("destination", "d", "", "to where to save the zipped packages: /tmp/envs")
+	rootCmd.PersistentFlags().StringP("destination", "d", "", "to where to save the exported packages")
 
 	rootCmd.MarkPersistentFlagRequired("container")
 	rootCmd.MarkPersistentFlagRequired("envName")

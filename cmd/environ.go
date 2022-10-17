@@ -5,7 +5,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	// "git.tazi.ai/samet/rte-cli/environ"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +14,7 @@ var environCmd = &cobra.Command{
 	Aliases: []string{"e"},
 	Short:   "Manage conda environments",
 	Long: `Parent command to host subcommands for managing conda environments.
-	Conda environments can be created and cloned.`,
+	Conda environments can be created, cloned and copied from a zip file.`,
 }
 
 func init() {
@@ -31,6 +30,5 @@ func init() {
 	// is called directly, e.g.:
 	// environCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	environCmd.PersistentFlags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
-	environCmd.PersistentFlags().StringP("sourceFile", "f", "", "path of compressed package directory")
 	environCmd.PersistentFlags().StringP("pythonVersion", "v", "3.8", "Python version")
 }

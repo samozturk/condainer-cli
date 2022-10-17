@@ -67,24 +67,29 @@ Available Commands:
 
 
 Flags:
->-c, --container string     container name
-
->-e, --envName string       conda environment name
-
 >-h, --help                 help for rte-cli
 
->-n, --newEnvName string    environment name for cloning a new environment
+>-c, --container *string*           *container name*
 
->-p, --packageName string   package name
+>-e, --envName *string*             *conda environment name, default: base*
 
->-f, --sourceFile string    path of compressed package directory
+>-n, --newEnvName *string*          *environment name for cloning a new environment*
 
->- , --version              version for rte-cli
+>-p, --packageName *string*         *package name*
 
->-r, --requirementsFile     Path of requirements.txt to be installed
+>-f, --sourceFile *string*          *path of compressed package directory*
 
->-v , --pythonVersion       Python version of the environment
+>- , --version                      *version for rte-cli*
 
+>-r, --requirementsFile *string*    *Path of requirements.txt to be installed*
+
+>-v , --pythonVersion *string*      *Python version of the environment*
+
+>-b , --hostBindPath *string*       *home path for container, default: /home/tazi*
+
+>-d , --destination *string*        *to where to save the exported packages*
+
+>-l , --local *string*              *from where to get packages and zip. true means from local, false means from a container.*
 
 Use **"rte-cli [command] --help"** for more information about a command.
 
@@ -112,36 +117,50 @@ Zipped environment file: zipped_env.zip
 ```rte-cli environ AddZipEnv --container my_cont --envName my_env --sourceFile zipped_env.zip```
 
 #### Package Related ####
- - **To install a package**
+ - **To add a package to the environment in the container**
 Environment name: my_env
 Container name: my_cont
 Clone environment name: numpy
-``` rte-cli package add -c my_cont -e my_env -p numpy```
+Home path of the container: /home/tazi
+``` rte-cli package add -c my_cont -e my_env -p numpy -m /home/tazi```
 
- - **To remove a package**
+ - **To remove a package from the environment in the container**
 Environment name: my_env
 Container name: my_cont
 Clone environment name: numpy
-``` rte-cli package remove -c my_cont -e my_env -p numpy```
+Home path of the container: /home/tazi
+``` rte-cli package remove -c my_cont -e my_env -p numpy -m /home/tazi```
 
- - **To update a package**
+ - **To update a package of the environment in the container**
 Environment name: my_env
 Container name: my_cont
 Clone environment name: numpy
-``` rte-cli package update -c my_cont -e my_env -p numpy```
+Home path of the container: /home/tazi
+``` rte-cli package update -c my_cont -e my_env -p numpy -m /home/tazi```
 
- - **To install a package from a compressed file**
+ - **To install packages from a compressed file**
 Environment name: my_env
 Container name: my_cont
+Home path of the container: /home/tazi
 Source file: downloads/numpy.zip
-``` rte-cli package addZip -c my_cont -e my_env -f downloads/numpy.zip```
+
+``` rte-cli package addZip -c my_cont -e my_env -m /home/tazi -f downloads/numpy.zip```
 
  - **To install multiple packages from a requirements.txt file**
 Environment name: my_env
 Container name: my_cont
 Source file: downloads/requirements.txt
-``` rte-cli package installReq -c my_cont -e my_env -r downloads/requirements.txt```
+Home path of the container: /home/tazi
 
+``` rte-cli package installReq -c my_cont -e my_env -r downloads/requirements.txt -m /home/tazi```
+
+ - **To wrap packages of an environment to a compressed file**
+Environment name: my_env
+Container name: my_cont
+Home path of the container: /home/tazi
+From local environment or container(boolean value): local
+
+``` rte-cli package getZip -c my_cont -e my_env -m /home/tazi -l=true -f downloads/numpy.zip```
 #### Run Related ####
  - **To run a python script**
 Environment name: my_env
