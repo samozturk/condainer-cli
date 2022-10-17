@@ -32,6 +32,5 @@ func init() {
 	// is called directly, e.g.:
 	// packageCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	packageCmd.PersistentFlags().StringP("packageName", "p", "", "package name")
-	rootCmd.PersistentFlags().StringP("requirementsFile", "r", "", "path of requirements txt")
 
 }

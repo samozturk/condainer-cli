@@ -58,7 +58,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// installReqCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	installReqCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	installReqCmd.Flags().StringP("sourceFile", "f", "requirements.txt", "path of the file")
 	installReqCmd.MarkPersistentFlagRequired("sourceFile")
 
 }

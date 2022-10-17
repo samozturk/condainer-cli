@@ -81,8 +81,6 @@ Flags:
 
 >- , --version                      *version for rte-cli*
 
->-r, --requirementsFile *string*    *Path of requirements.txt to be installed*
-
 >-v , --pythonVersion *string*      *Python version of the environment*
 
 >-b , --hostBindPath *string*       *home path for container, default: /home/tazi*
@@ -152,7 +150,7 @@ Container name: my_cont
 Source file: downloads/requirements.txt
 Home path of the container: /home/tazi
 
-``` rte-cli package installReq -c my_cont -e my_env -r downloads/requirements.txt -m /home/tazi```
+``` rte-cli package installReq -c my_cont -e my_env -f downloads/requirements.txt -m /home/tazi```
 
  - **To wrap packages of an environment to a compressed file**
 Environment name: my_env
