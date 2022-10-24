@@ -73,8 +73,8 @@ func init() {
 	getZipCmd.Flags().BoolP("local", "l", true, "from where to get packages and zip. true means from local, false means from a container.")
 	getZipCmd.Flags().StringP("destination", "d", "", "to where to save the exported packages")
 	// getZipCmd.MarkPersistentFlagRequired("sourceFile")
-	getZipCmd.MarkPersistentFlagRequired("local")
-	getZipCmd.MarkPersistentFlagRequired("destination")
+	getZipCmd.MarkFlagRequired("local")
+	getZipCmd.MarkFlagRequired("destination")
 }
 
 func getZipAction(containerName string, envName string, homePath string, local bool, dest string) error { //deleted source string

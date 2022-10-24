@@ -59,7 +59,7 @@ func init() {
 	// is called directly, e.g.:
 	// installReqCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	installReqCmd.Flags().StringP("sourceFile", "f", "requirements.txt", "path of the file")
-	installReqCmd.MarkPersistentFlagRequired("sourceFile")
+	installReqCmd.MarkFlagRequired("sourceFile")
 
 }
 

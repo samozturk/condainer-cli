@@ -59,7 +59,7 @@ func init() {
 	// is called directly, e.g.:
 	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	createCmd.Flags().StringP("pythonVersion", "v", "3.8", "Python version")
-	createCmd.MarkPersistentFlagRequired("pythonVersion")
+	createCmd.MarkFlagRequired("pythonVersion")
 }
 
 func createAction(containerName string, envName string, pythonVersion string, homePath string) error {

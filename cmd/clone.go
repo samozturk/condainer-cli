@@ -59,7 +59,7 @@ func init() {
 	// is called directly, e.g.:
 	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	cloneCmd.Flags().StringP("newEnvName", "n", "", "environment name for cloning a new environment")
-	cloneCmd.MarkPersistentFlagRequired("newEnvName")
+	cloneCmd.MarkFlagRequired("newEnvName")
 }
 
 func cloneAction(containerName string, envName string, newEnvName string, homePath string) error {

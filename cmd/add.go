@@ -58,7 +58,7 @@ func init() {
 	// is called directly, e.g.:
 	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	addCmd.Flags().StringP("packageName", "p", "", "package name")
-	addCmd.MarkPersistentFlagRequired("packageName")
+	addCmd.MarkFlagRequired("packageName")
 }
 
 func addAction(containerName string, envName string, packageName string, homePath string) error {

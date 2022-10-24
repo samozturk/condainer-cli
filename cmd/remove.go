@@ -57,8 +57,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// removeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	removeCmd.Flags().StringP("packageName", "p", "", "package name")
-	removeCmd.MarkPersistentFlagRequired("packageName")
+	// removeCmd.Flags().StringP("packageName", "p", "", "package name")
+	// removeCmd.MarkFlagRequired("packageName")
 }
 func removeAction(containerName string, envName string, packageName string, homePath string) error {
 	sOut, err := pkg.RemovePackage(containerName, envName, packageName, homePath)
