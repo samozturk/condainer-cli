@@ -20,7 +20,7 @@ var getZipCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		containerName, cErr := cmd.Flags().GetString("container")
 		envName, eErr := cmd.Flags().GetString("envName")
-		source, sErr := cmd.Flags().GetString("requirementsFile")
+		// source, sErr := cmd.Flags().GetString("requirementsFile")
 		homePath, hErr := cmd.Flags().GetString("homePath")
 		local, lErr := cmd.Flags().GetBool("local")
 		dest, dErr := cmd.Flags().GetString("destination")
@@ -33,9 +33,9 @@ var getZipCmd = &cobra.Command{
 		if eErr != nil {
 			return eErr
 		}
-		if sErr != nil {
-			return sErr
-		}
+		// if sErr != nil {
+		// 	return sErr
+		// }
 		if lErr != nil {
 			return lErr
 		}
@@ -45,14 +45,14 @@ var getZipCmd = &cobra.Command{
 		if dErr != nil {
 			return dErr
 		}
-		getErr := getZipAction(containerName, envName, source, homePath, local, dest)
+		getErr := getZipAction(containerName, envName, homePath, local, dest)
 		return getErr
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		containerName, _ := cmd.Flags().GetString("container")
 		envName, _ := cmd.Flags().GetString("envName")
-		source, _ := cmd.Flags().GetString("requirementsFile")
-		msg := fmt.Sprintf("packages have installed from %v to %v environment in %v container", source, envName, containerName)
+		// source, _ := cmd.Flags().GetString("requirementsFile")
+		msg := fmt.Sprintf("got packages from %v environment in %v container", envName, containerName)
 		utils.ShowMessage(utils.INFO, msg)
 	},
 }
@@ -69,15 +69,15 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// getZipCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	getZipCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
+	// getZipCmd.Flags().StringP("sourceFile", "f", "", "path of compressed package directory")
 	getZipCmd.Flags().BoolP("local", "l", true, "from where to get packages and zip. true means from local, false means from a container.")
 	getZipCmd.Flags().StringP("destination", "d", "", "to where to save the exported packages")
-	getZipCmd.MarkPersistentFlagRequired("sourceFile")
+	// getZipCmd.MarkPersistentFlagRequired("sourceFile")
 	getZipCmd.MarkPersistentFlagRequired("local")
 	getZipCmd.MarkPersistentFlagRequired("destination")
 }
 
-func getZipAction(containerName string, envName string, source string, homePath string, local bool, dest string) error {
+func getZipAction(containerName string, envName string, homePath string, local bool, dest string) error { //deleted source string
 	if local {
 		stdout, stderr, err := pkg.GetPkgsFromHost(envName, dest)
 		if err != nil {
