@@ -7,7 +7,7 @@ rte-cli Command Line Tool
 <img src="resources/rte-cli-logo.png" alt="rte-cli logo" width="200"/>
 </p>
 
-rte-cli is a utility for handling python runtime environment in containers for tazi. It has features to manage conda environments, python packages etc.
+rte-cli is a utility for handling python runtime environment in containers. It has features to manage conda environments, python packages etc.
 
 **<u>Environments</u>**:
  It enables you to **create** a conda environment, **clone** it and **add**/**remove** packages to/from specified environment.
